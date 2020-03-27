@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Questionaire</title>
+
+    <meta name="viewport" content="width=device-width" />
+    <script src="https://unpkg.com/jquery"></script>
+    <script src="https://surveyjs.azureedge.net/1.5.17/survey.jquery.js"></script>
+    <link href="https://surveyjs.azureedge.net/1.5.17/modern.css" type="text/css" rel="stylesheet" />
+    <link rel="stylesheet" href="./index.css">
+
+</head>
+
+<body>
+
+    <div id="surveyElement" style="display:inline-block;width:100%;"></div>
+    <div id="surveyResult"></div>
+
+    <script type="text/javascript" src="./index.js"></script>
+
+</body>
+
+</html>
+
+<script>
+    // calling survey package
+    Survey
+        .StylesManager
+        .applyTheme("modern");
+
+    var json = {
+        title: "Questionnaire",
+        showProgressBar: "bottom",
+        showTimerPanel: "none",
+        maxTimeToFinishPage: 10,
+        maxTimeToFinish: 30,
+        firstPageIsStarted: true,
+        startSurveyText: "Start Questionnaire",
+        pages: [
+            {
+                questions: [
+                    {
+                        type: "html",
+                        html: "You are about to start a simple questionnaire about yourself. <br/>You have 10 seconds for every page and 30 seconds for the whole activity of 3 questions.<br/>Please click on <b>'Start Quiz'</b> button when you are ready."
+                    }
+                ]
+            }, {
+                questions: [
+                    {
+                        type: "radiogroup",
+                        name: "question1",
+                        title: "Question One",
+                        choices: [
+                            "A", "B", "C", "D"
+                        ],
+                    }
+                ]
+            }, {
+                questions: [
+                    {
+                        type: "radiogroup",
+                        name: "question2",
+                        title: "Question Two",
+                        choicesOrder: "random",
+                        choices: [
+                            "A", "B", "C", "D"
+                        ],
+                    }
+                ]
+            }, {
+                maxTimeToFinish: 30,
+                questions: [
+                    {
+                        type: "radiogroup",
+                        name: "question3",
+                        title: "Question Three",
+                        choicesOrder: "random",
+                        choices: [
+                            "A", "B", "C", "D"
+                        ],
+                    }
+                ]
+            }
+        ],
+        completedHtml: "<h4>Thank you for your participation.</h4>"
+
+    };
+
+    // creates the survey object
+    window.survey = new Survey.Model(json);
+    $("#surveyElement").Survey({ model: survey });
+
+    survey
+        .onComplete
+        .add(function (sender, options) {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "YourServiceForStoringSurveyResultsAsJSON_URL");
+            xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+            xhr.send(JSON.stringify(sender.data));
+        });
+
+</script>
