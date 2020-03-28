@@ -295,6 +295,61 @@ namespace accountmanager
 			sqlConnection.Close();
 		}
 
+        [WebMethod]
+        public string AddUser(string first, string last, string empID, string email, string position, string status, string pw )
+        {
 
-	}
+            ///webmethod to a newuser to the database
+
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            //string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `password`) " +
+            // "VALUES('"+ first +"', '"+ last +"', '"+ empID + "', '" + email + "', '" + position + "', '" + status + "', '" + pw + "';";
+
+            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, SHA1(@passwordValue));";
+
+            //"VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, SHA1(@passwordValue);)";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+
+           sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(first));
+            sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(last));
+            sqlCommand.Parameters.AddWithValue("@empIdValue", HttpUtility.UrlDecode(empID));
+            sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
+            sqlCommand.Parameters.AddWithValue("@positionValue", HttpUtility.UrlDecode(position));
+            sqlCommand.Parameters.AddWithValue("@statusValue", HttpUtility.UrlDecode(status));
+            sqlCommand.Parameters.AddWithValue("@passwordValue", HttpUtility.UrlDecode(pw));
+
+            sqlConnection.Open();
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+                return "Success!";
+
+            }
+
+            catch (Exception e)
+            {
+                var str = e.ToString();
+                // Data base is setup to require a unique email and license plate. If a duplicate of either is put in the server will return an error. The follow code will
+                // search the error returned from the server and return appropriate feedback.
+
+                if (str.Contains("email_UNIQUE"))
+                {
+                    return "email";
+                }
+
+                else
+                {
+                    return str;
+                }
+            }
+            sqlConnection.Close();
+
+        }
+
+    }
 }
