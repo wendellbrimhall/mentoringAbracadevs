@@ -25,7 +25,7 @@ namespace accountmanager
 
 		//EXAMPLE OF A SIMPLE SELECT QUERY (PARAMETERS PASSED IN FROM CLIENT)
 		[WebMethod]
-		public bool LogOn(string uid, string pass)
+		public bool LogOn(string userID, string password)
 		{
 			//LOGIC: pass the parameters into the database to see if an account
 			//with these credentials exist.  If it does, then return true.  If
@@ -37,7 +37,7 @@ namespace accountmanager
 			//our connection string comes from our web.config file like we talked about earlier
 			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 			//here's our query.  A basic select with nothing fancy.  Note the parameters that begin with @
-			string sqlSelect = "SELECT id FROM accounts WHERE userid=@idValue and pass=@passValue";
+			string sqlSelect = "SELECT userID, password FROM Users_mentoring WHERE userID=@idValue and password=SHA1(@passValue)";
 
 			//set up our connection object to be ready to use our connection string
 			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
@@ -47,8 +47,8 @@ namespace accountmanager
 			//tell our command to replace the @parameters with real values
 			//we decode them because they came to us via the web so they were encoded
 			//for transmission (funky characters escaped, mostly)
-			sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(uid));
-			sqlCommand.Parameters.AddWithValue("@passValue", HttpUtility.UrlDecode(pass));
+			sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(userID));
+			sqlCommand.Parameters.AddWithValue("@passValue", HttpUtility.UrlDecode(password));
 
 			//a data adapter acts like a bridge between our command object and 
 			//the data we are trying to get back and put in a table object
@@ -69,13 +69,15 @@ namespace accountmanager
 		}
 
 		[WebMethod]
-		public void LogOff()
+		public bool LogOff()
 		{
-			//if they log off, we don't have much to do
-			//right now.  Later, we'll see how we can
-			//use this method to "forget" this user at
-			//the server level.
-		}
+            //if they log off, we don't have much to do
+            //right now.  Later, we'll see how we can
+            //use this method to "forget" this user at
+            //the server level.
+            Session.Abandon();
+            return true;
+        }
 
 		//EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
 		[WebMethod]
