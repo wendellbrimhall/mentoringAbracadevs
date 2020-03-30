@@ -90,7 +90,7 @@ namespace accountmanager
         }
 
         [WebMethod]
-        public string AddUser(string first, string last, string empID, string email, string position, string pw )
+        public string AddUser(string first, string last, string empID, string email, string position, string department, string pw )
         {
 
             ///webmethod to a newuser to the database
@@ -101,7 +101,7 @@ namespace accountmanager
             //string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `password`) " +
             // "VALUES('"+ first +"', '"+ last +"', '"+ empID + "', '" + email + "', '" + position + "', '" + status + "', '" + pw + "';";
 
-            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `admin`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, 'pending', '0', SHA1(@passwordValue));";
+            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `admin`, `department`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, 'pending', '0', @departmentValue, SHA1(@passwordValue));";
 
             //"VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, SHA1(@passwordValue);)";
 
@@ -114,7 +114,7 @@ namespace accountmanager
             sqlCommand.Parameters.AddWithValue("@empIdValue", HttpUtility.UrlDecode(empID));
             sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
             sqlCommand.Parameters.AddWithValue("@positionValue", HttpUtility.UrlDecode(position));
-            //sqlCommand.Parameters.AddWithValue("@statusValue", HttpUtility.UrlDecode(status));
+            sqlCommand.Parameters.AddWithValue("@departmentValue", HttpUtility.UrlDecode(department));
             sqlCommand.Parameters.AddWithValue("@passwordValue", HttpUtility.UrlDecode(pw));
 
             sqlConnection.Open();
