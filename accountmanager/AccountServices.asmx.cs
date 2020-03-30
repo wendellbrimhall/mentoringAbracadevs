@@ -24,8 +24,8 @@ namespace accountmanager
 	{
 
 		//EXAMPLE OF A SIMPLE SELECT QUERY (PARAMETERS PASSED IN FROM CLIENT)
-		[WebMethod]
-		public bool LogOn(string userID, string password)
+		[WebMethod(EnableSession = true)]
+		public bool LogOn(string email, string password)
 		{
 			//LOGIC: pass the parameters into the database to see if an account
 			//with these credentials exist.  If it does, then return true.  If
@@ -37,7 +37,7 @@ namespace accountmanager
 			//our connection string comes from our web.config file like we talked about earlier
 			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 			//here's our query.  A basic select with nothing fancy.  Note the parameters that begin with @
-			string sqlSelect = "SELECT userID, password FROM Users_mentoring WHERE userID=@idValue and password=SHA1(@passValue)";
+			string sqlSelect = "SELECT * FROM Users_mentoring WHERE email=@emailValue and password=SHA1(@passValue)";
 
 			//set up our connection object to be ready to use our connection string
 			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
@@ -47,28 +47,38 @@ namespace accountmanager
 			//tell our command to replace the @parameters with real values
 			//we decode them because they came to us via the web so they were encoded
 			//for transmission (funky characters escaped, mostly)
-			sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(userID));
+			sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
 			sqlCommand.Parameters.AddWithValue("@passValue", HttpUtility.UrlDecode(password));
 
 			//a data adapter acts like a bridge between our command object and 
 			//the data we are trying to get back and put in a table object
 			MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
 			//here's the table we want to fill with the results from our query
-			DataTable sqlDt = new DataTable();
+			DataTable sqlDt = new DataTable("accounts");
 			//here we go filling it!
 			sqlDa.Fill(sqlDt);
 			//check to see if any rows were returned.  If they were, it means it's 
 			//a legit account
 			if (sqlDt.Rows.Count > 0)
 			{
-				//flip our flag to true so we return a value that lets them know they're logged in
-				success = true;
+                // adding Session 
+                Session["userID"] = sqlDt.Rows[0]["userID"];
+                Session["first_name"] = sqlDt.Rows[0]["firstName"];
+                Session["last_name"] = sqlDt.Rows[0]["lastName"];
+                Session["employee_id"] = sqlDt.Rows[0]["employeeID"];
+                Session["email"] = sqlDt.Rows[0]["email"];
+                Session["position"] = sqlDt.Rows[0]["position"];
+                Session["status"] = sqlDt.Rows[0]["status"];
+                Session["admin"] = sqlDt.Rows[0]["admin"];
+                                               
+                //flip our flag to true so we return a value that lets them know they're logged in
+                success = true;
 			}
 			//return the result!
 			return success;
 		}
 
-		[WebMethod]
+		[WebMethod(EnableSession = true)]
 		public bool LogOff()
 		{
             //if they log off, we don't have much to do
@@ -79,8 +89,123 @@ namespace accountmanager
             return true;
         }
 
-		//EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
-		[WebMethod]
+        [WebMethod]
+        public string AddUser(string first, string last, string empID, string email, string position, string pw )
+        {
+
+            ///webmethod to a newuser to the database
+
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            //string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `password`) " +
+            // "VALUES('"+ first +"', '"+ last +"', '"+ empID + "', '" + email + "', '" + position + "', '" + status + "', '" + pw + "';";
+
+            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `admin`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, 'pending', '0', SHA1(@passwordValue));";
+
+            //"VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, SHA1(@passwordValue);)";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+
+           sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(first));
+            sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(last));
+            sqlCommand.Parameters.AddWithValue("@empIdValue", HttpUtility.UrlDecode(empID));
+            sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
+            sqlCommand.Parameters.AddWithValue("@positionValue", HttpUtility.UrlDecode(position));
+            //sqlCommand.Parameters.AddWithValue("@statusValue", HttpUtility.UrlDecode(status));
+            sqlCommand.Parameters.AddWithValue("@passwordValue", HttpUtility.UrlDecode(pw));
+
+            sqlConnection.Open();
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+                return "Success!";
+
+            }
+
+            catch (Exception e)
+            {
+                var str = e.ToString();
+                // Data base is setup to require a unique email and license plate. If a duplicate of either is put in the server will return an error. The follow code will
+                // search the error returned from the server and return appropriate feedback.
+
+                if (str.Contains("email_UNIQUE"))
+                {
+                    return "email";
+                }
+
+                else
+                {
+                    return str;
+                }
+            }
+            sqlConnection.Close();
+
+        }
+
+        [WebMethod(EnableSession = true)]
+        public Account[] ViewAccountInfo()
+        {
+            // get info of an account
+            var user_id = Session["user_id"];
+            var first_name = Session["first_name"];
+            var last_name = Session["last_name"];
+            var employee_id = Session["employee_id"];
+            var email = Session["email"];
+            var position = Session["position"];
+            var admin = Convert.ToInt32(Session["admin"]);
+
+            string sqlSelect;
+
+            DataTable sqlDt = new DataTable("user");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            if (admin == 0)
+            {
+                // if the user is not a admin, only his/ her account info will be displayed 
+                //sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
+
+                // testing
+                sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='eee@gmail.com';";
+            }
+            else
+            {
+                // if the user is a admin, all users' account info will be displayed 
+                //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
+                sqlSelect = "SELECT * FROM Users_mentoring;";
+            }
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            //gonna use this to fill a data table
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            //loop through each row in the dataset
+            List<Account> accountInfo = new List<Account>();
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                accountInfo.Add(new Account
+                {
+                    userID = Convert.ToInt32(sqlDt.Rows[i]["userID"]),
+                    firstName = sqlDt.Rows[i]["firstName"].ToString(),
+                    lastName = sqlDt.Rows[i]["lastName"].ToString(),
+                    employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
+                    email = sqlDt.Rows[i]["email"].ToString(),
+                    position = sqlDt.Rows[i]["position"].ToString()
+                });
+            }
+            //convert the list of accounts to an array and return!
+            return accountInfo.ToArray();
+        }
+
+
+        //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
+        [WebMethod]
 		public void RequestAccount(string uid, string pass, string firstName, string lastName, string email)
 		{
 			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
@@ -118,49 +243,7 @@ namespace accountmanager
 			sqlConnection.Close();
 		}
 
-		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
-		[WebMethod]
-		public Account[] GetAccounts()
-		{
-			//check out the return type.  It's an array of Account objects.  You can look at our custom Account class in this solution to see that it's 
-			//just a container for public class-level variables.  It's a simple container that asp.net will have no trouble converting into json.  When we return
-			//sets of information, it's a good idea to create a custom container class to represent instances (or rows) of that information, and then return an array of those objects.  
-			//Keeps everything simple.
-
-			//LOGIC: get all the active accounts and return them!
-
-			DataTable sqlDt = new DataTable("accounts");
-
-			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-			string sqlSelect = "select id, userid, pass, firstname, lastname, email from accounts where active=1 order by lastname";
-			
-			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-			MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-			//gonna use this to fill a data table
-			MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-			//filling the data table
-			sqlDa.Fill(sqlDt);
 		
-			//loop through each row in the dataset, creating instances
-			//of our container class Account.  Fill each acciount with
-			//data from the rows, then dump them in a list.
-			List<Account> accounts = new List<Account>();
-				for (int i = 0; i<sqlDt.Rows.Count; i++)
-				{
-					accounts.Add(new Account
-					{
-						id = Convert.ToInt32(sqlDt.Rows[i]["id"]),
-						userId = sqlDt.Rows[i]["userid"].ToString(),
-						password = sqlDt.Rows[i]["pass"].ToString(),
-						firstName = sqlDt.Rows[i]["firstname"].ToString(),
-						lastName = sqlDt.Rows[i]["lastname"].ToString(),
-						email = sqlDt.Rows[i]["email"].ToString()
-					});
-				}
-				//convert the list of accounts to an array and return!
-				return accounts.ToArray();
-		}
 
 		//EXAMPLE OF AN UPDATE QUERY WITH PARAMS PASSED IN
 		[WebMethod]
@@ -216,7 +299,7 @@ namespace accountmanager
 			{
 				accountRequests.Add(new Account
 				{
-					id = Convert.ToInt32(sqlDt.Rows[i]["id"]),
+					userID = Convert.ToInt32(sqlDt.Rows[i]["id"]),
 					firstName = sqlDt.Rows[i]["firstname"].ToString(),
 					lastName = sqlDt.Rows[i]["lastname"].ToString(),
 					email = sqlDt.Rows[i]["email"].ToString()
@@ -297,61 +380,7 @@ namespace accountmanager
 			sqlConnection.Close();
 		}
 
-        [WebMethod]
-        public string AddUser(string first, string last, string empID, string email, string position, string status, string pw )
-        {
-
-            ///webmethod to a newuser to the database
-
-
-            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-
-            //string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `password`) " +
-            // "VALUES('"+ first +"', '"+ last +"', '"+ empID + "', '" + email + "', '" + position + "', '" + status + "', '" + pw + "';";
-
-            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, SHA1(@passwordValue));";
-
-            //"VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, SHA1(@passwordValue);)";
-
-            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-
-           sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(first));
-            sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(last));
-            sqlCommand.Parameters.AddWithValue("@empIdValue", HttpUtility.UrlDecode(empID));
-            sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
-            sqlCommand.Parameters.AddWithValue("@positionValue", HttpUtility.UrlDecode(position));
-            sqlCommand.Parameters.AddWithValue("@statusValue", HttpUtility.UrlDecode(status));
-            sqlCommand.Parameters.AddWithValue("@passwordValue", HttpUtility.UrlDecode(pw));
-
-            sqlConnection.Open();
-            try
-            {
-                sqlCommand.ExecuteNonQuery();
-                return "Success!";
-
-            }
-
-            catch (Exception e)
-            {
-                var str = e.ToString();
-                // Data base is setup to require a unique email and license plate. If a duplicate of either is put in the server will return an error. The follow code will
-                // search the error returned from the server and return appropriate feedback.
-
-                if (str.Contains("email_UNIQUE"))
-                {
-                    return "email";
-                }
-
-                else
-                {
-                    return str;
-                }
-            }
-            sqlConnection.Close();
-
-        }
+        
 
     }
 }

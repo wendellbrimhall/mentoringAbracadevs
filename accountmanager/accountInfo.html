@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>View Account Info</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+        var infoArray;
+
+        //this function grabs and display account info
+        function LoadInfo() {
+            var webMethod = "AccountServices.asmx/ViewAccountInfo";
+            var parameters = "{}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    console.log('Function started');
+                    console.log(array);
+
+                    infoArray = array.d;
+                    console.log(infoArray);
+                    console.log(infoArray[0]["firstName"]);
+
+                    document.getElementById("firstNameId").value = infoArray[0]["firstName"];
+                    document.getElementById("lastNameId").value = infoArray[0]["lastName"];
+                    document.getElementById("employeeIDId").value= infoArray[0]["employeeID"];
+                    document.getElementById("emailId").value = infoArray[0]["email"];
+                    document.getElementById("positionId").value = infoArray[0]["position"];
+                }
+            });
+        }
+    </script>
+</head>
+
+
+<body onload="LoadInfo()">
+    <h1>View Account Information</h1>
+    <hr />
+
+    <form id="infoFormId">
+        <div class="form-group">
+            <label>First Name: </label>
+            <input type="text" id="firstNameId">
+        </div>
+        <br />
+
+        <div class="form-group">
+            <label>Last Name: </label>
+            <input type="text" id="lastNameId">
+        </div>
+        <br />
+
+        <div class="form-group">
+            <label>Employee ID: </label>
+            <input type="text" id="employeeIDId">
+        </div>
+        <br />
+
+        <div class="form-group">
+            <label>Email Address: </label>
+            <input type="text" id="emailId">
+        </div>
+        <br />
+
+        <div class="form-group">
+            <label>Position: </label>
+            <input type="text" id="positionId">
+        </div>
+        <br />
+    </form>
+
+</body>
+</html>

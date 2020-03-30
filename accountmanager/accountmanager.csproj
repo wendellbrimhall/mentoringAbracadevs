@@ -93,6 +93,7 @@
     <Content Include="AccountServices.asmx" />
     <Content Include="Global.asax" />
     <Content Include="addUser.html" />
+    <Content Include="accountInfo.html" />
     <Content Include="questionnaireA.html" />
     <Content Include="questionnaireB.html" />
     <Content Include="Web.config" />
