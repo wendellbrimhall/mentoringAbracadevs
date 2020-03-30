@@ -89,8 +89,9 @@ namespace accountmanager
             return true;
         }
 
+      
         [WebMethod]
-        public string AddUser(string first, string last, string empID, string email, string position, string pw )
+        public string AddUser(string first, string last, string empID, string email, string position, string pw)
         {
 
             ///webmethod to a newuser to the database
@@ -109,7 +110,7 @@ namespace accountmanager
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
 
-           sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(first));
+            sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(first));
             sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(last));
             sqlCommand.Parameters.AddWithValue("@empIdValue", HttpUtility.UrlDecode(empID));
             sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
@@ -144,6 +145,7 @@ namespace accountmanager
             sqlConnection.Close();
 
         }
+
 
         [WebMethod(EnableSession = true)]
         public Account[] ViewAccountInfo()
@@ -380,7 +382,8 @@ namespace accountmanager
 			sqlConnection.Close();
 		}
 
-        
+
+
 
     }
 }
