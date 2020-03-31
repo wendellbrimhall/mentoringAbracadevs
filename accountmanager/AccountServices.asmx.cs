@@ -9,6 +9,8 @@ using MySql.Data;
 using MySql.Data.MySqlClient;
 //and we need this to manipulate data from a db
 using System.Data;
+using System.Net;
+using System.Net.Mail;
 
 namespace accountmanager
 {
@@ -316,6 +318,41 @@ namespace accountmanager
             }
         }
 
+        [WebMethod]
+        public void SendEmail(string recipient, string subject, string body)
+        ///This webmethod will send out an email from cis440parking@asu.edu using googles
+        ///SMTP server. 
+
+        {
+            var toAddress = recipient;
+
+
+
+            using (MailMessage mail = new MailMessage())
+            {
+
+                var smtpAddr = "smtp.gmail.com";
+                var portNumber = 587;
+                var enableSSL = true;
+                var fromAddress = "cis440parking@gmail.com";
+                var password = "!!Abracadevs";
+
+
+                mail.From = new MailAddress(fromAddress);
+                mail.To.Add(toAddress);
+                mail.Subject = subject;
+                mail.Body = body;
+                mail.IsBodyHtml = true;
+
+                using (SmtpClient smtp = new SmtpClient(smtpAddr, portNumber))
+                {
+                    smtp.Credentials = new NetworkCredential(fromAddress, password);
+                    smtp.EnableSsl = enableSSL;
+                    smtp.Send(mail);
+
+                }
+            }
+        }
 
 
     }
