@@ -28,7 +28,27 @@
                     //if login successful directs to home.html page
                     if (msg.d == true) {
                         console.log("successful login!");
-                        window.location.replace("home.html");
+
+                        var webMethod = "AccountServices.asmx/SurveyComplete";
+                        $.ajax({
+                            type: "POST",
+                            url: webMethod,
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (msg) {
+
+                                if (msg.d == true) {
+                                    window.location.replace("home.html");
+                                }
+                                else {
+                                    window.location.replace("questionnaireB.html");
+                                }
+                            },
+                            error: function (e) {
+                                alert("boo...");
+                            }
+                        });
+                     
                     }
                     else {
                         console.log("login failed");

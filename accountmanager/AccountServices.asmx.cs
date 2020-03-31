@@ -71,7 +71,8 @@ namespace accountmanager
                 Session["position"] = sqlDt.Rows[0]["position"];
                 Session["status"] = sqlDt.Rows[0]["status"];
                 Session["admin"] = sqlDt.Rows[0]["admin"];
-                                               
+                Session["surveyComplete"] = sqlDt.Rows[0]["surveyComplete"];
+
                 //flip our flag to true so we return a value that lets them know they're logged in
                 success = true;
 			}
@@ -237,183 +238,6 @@ namespace accountmanager
 
 
 
-
-        //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
-        [WebMethod]
-		public void RequestAccount(string uid, string pass, string firstName, string lastName, string email)
-		{
-			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-			//the only thing fancy about this query is SELECT LAST_INSERT_ID() at the end.  All that
-			//does is tell mySql server to return the primary key of the last inserted row.
-			string sqlSelect = "insert into accounts (userid, pass, firstname, lastname, email) " +
-				"values(@idValue, @passValue, @fnameValue, @lnameValue, @emailValue); SELECT LAST_INSERT_ID();";
-
-			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-			MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-			sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(uid));
-			sqlCommand.Parameters.AddWithValue("@passValue", HttpUtility.UrlDecode(pass));
-			sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(firstName));
-			sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(lastName));
-			sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
-
-			//this time, we're not using a data adapter to fill a data table.  We're just
-			//opening the connection, telling our command to "executescalar" which says basically
-			//execute the query and just hand me back the number the query returns (the ID, remember?).
-			//don't forget to close the connection!
-			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
-			try
-			{
-				int accountID = Convert.ToInt32(sqlCommand.ExecuteScalar());
-				//here, you could use this accountID for additional queries regarding
-				//the requested account.  Really this is just an example to show you
-				//a query where you get the primary key of the inserted row back from
-				//the database!
-			}
-			catch (Exception e) {
-			}
-			sqlConnection.Close();
-		}
-
-		
-
-		//EXAMPLE OF AN UPDATE QUERY WITH PARAMS PASSED IN
-		[WebMethod]
-		public void UpdateAccount(string id, string uid, string pass, string firstName, string lastName, string email)
-		{
-			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-			//this is a simple update, with parameters to pass in values
-			string sqlSelect = "update accounts set userid=@uidValue, pass=@passValue, firstname=@fnameValue, lastname=@lnameValue, " +
-				"email=@emailValue where id=@idValue";
-
-			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-			MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-			sqlCommand.Parameters.AddWithValue("@uidValue", HttpUtility.UrlDecode(uid));
-			sqlCommand.Parameters.AddWithValue("@passValue", HttpUtility.UrlDecode(pass));
-			sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(firstName));
-			sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(lastName));
-			sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
-			sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
-
-			sqlConnection.Open();
-			//we're using a try/catch so that if the query errors out we can handle it gracefully
-			//by closing the connection and moving on
-			try
-			{
-				sqlCommand.ExecuteNonQuery();
-			}
-			catch (Exception e)
-			{
-			}
-			sqlConnection.Close();
-		}
-
-		//EXAMPLE OF A SELECT, AND RETURNING "COMPLEX" DATA TYPES
-		[WebMethod]
-		public Account[] GetAccountRequests()
-		{//LOGIC: get all account requests and return them!
-
-			DataTable sqlDt = new DataTable("accountrequests");
-
-			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-			//requests just have active set to 0
-			string sqlSelect = "select id, userid, pass, firstname, lastname, email from accounts where active=0 order by lastname";
-
-			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-			MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-			MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-			sqlDa.Fill(sqlDt);
-			
-			List<Account> accountRequests = new List<Account>();
-			for (int i = 0; i < sqlDt.Rows.Count; i++)
-			{
-				accountRequests.Add(new Account
-				{
-					userID = Convert.ToInt32(sqlDt.Rows[i]["id"]),
-					firstName = sqlDt.Rows[i]["firstname"].ToString(),
-					lastName = sqlDt.Rows[i]["lastname"].ToString(),
-					email = sqlDt.Rows[i]["email"].ToString()
-				});
-			}
-			//convert the list of accounts to an array and return!
-			return accountRequests.ToArray();
-		}
-
-		//EXAMPLE OF A DELETE QUERY
-		[WebMethod]
-		public void DeleteAccount(string id)
-		{
-			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-			//this is a simple update, with parameters to pass in values
-			string sqlSelect = "delete from accounts where id=@idValue";
-
-			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-			MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-			
-			sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
-
-			sqlConnection.Open();
-			try
-			{
-				sqlCommand.ExecuteNonQuery();
-			}
-			catch (Exception e)
-			{
-			}
-			sqlConnection.Close();
-		}
-
-		//EXAMPLE OF AN UPDATE QUERY
-		[WebMethod]
-		public void ActivateAccount(string id)
-		{
-			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-			//this is a simple update, with parameters to pass in values
-			string sqlSelect = "update accounts set active=1 where id=@idValue";
-
-			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-			MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-			sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
-
-			sqlConnection.Open();
-			try
-			{
-				sqlCommand.ExecuteNonQuery();
-			}
-			catch (Exception e)
-			{
-			}
-			sqlConnection.Close();
-		}
-
-		//EXAMPLE OF AN DELETE QUERY
-		[WebMethod]
-		public void RejectAccount(string id)
-		{
-			string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-			string sqlSelect = "delete from accounts where id=@idValue";
-
-			MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-			MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-			sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(id));
-
-			sqlConnection.Open();
-			try
-			{
-				sqlCommand.ExecuteNonQuery();
-			}
-			catch (Exception e)
-			{
-			}
-			sqlConnection.Close();
-		}
-
         [WebMethod(EnableSession = true)]
         public string RecordSurvey(string q1, string q2, string q3, string q4 )
         {
@@ -421,8 +245,8 @@ namespace accountmanager
 
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-            //var user_id = Session["user_id"];
-            var user_id = 1;
+            var user_id = Session["user_id"].ToString();
+            
 
             string sqlSelect = "INSERT INTO `abracadevs`.`survey_mentoring` (`userID`, `q1`, `q2`, `q3`, `q4`) VALUES ('"+ user_id + "', '"+ q1 +"', '"+ q2 +"', '"+ q3 + "', '"+ q4 +"');";
 
@@ -436,7 +260,7 @@ namespace accountmanager
             {
                 sqlCommand.ExecuteNonQuery();
                 var str = "Success";
-                SurveyComplete(user_id);
+                CompleteSurvey(user_id);
 
                 //after the reservation is made, the SendReservationConfirmation function is called to notify the user that their spot has been reserved
                 return str;
@@ -450,7 +274,7 @@ namespace accountmanager
 
         }
 
-        public void SurveyComplete(int user_id)
+        public void CompleteSurvey(string user_id)
         {
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 
@@ -475,6 +299,21 @@ namespace accountmanager
             sqlConnection.Close();
 
 
+        }
+
+        [WebMethod(EnableSession = true)]
+        public bool SurveyComplete()
+        {
+            var surveycomplete = Convert.ToInt32(Session["surveyComplete"]);
+
+            if (surveycomplete == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
 
