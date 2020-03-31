@@ -3,13 +3,65 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>Log In</title>
+
+    <script>
+
+        //logs on user using email and pasword
+        function LogOnHandler(email, password) {
+            console.log("Function started");
+            var webMethod = "AccountServices.asmx/LogOn";
+
+            var parameters = "{\"email\":\"" + encodeURI(email) + "\",\"password\":\"" + encodeURI(password) + "\"}";
+
+            console.log(parameters);
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    console.log(msg.d);
+
+                    //if login successful directs to parking.html page
+                    if (msg.d == true) {
+                        console.log("successful login!");
+                        window.location.replace("home.html");
+                    }
+                    else {
+                        console.log("login failed");
+                    }
+                },
+                error: function (e) {
+                    console.log("boo...");
+                }
+            });
+        }
+    </script>
 
 </head>
+
 <body>
 
-    <label for="userID">userID</label>
-    <h1>username</h1>
+    <h1>Log In</h1>
+    <form  onsubmit="LogOnHandler($('#email_input').val(), $('#password_input').val()); return false;">
+        <div class="row align-items-center">
+            <div>
+                <input type="text" id="email_input"
+                       placeholder="Email" autocomplete="off" required>
+            </div>
+            <div>
+                <input id="password_input" type="password"
+                       placeholder="Password" required>
+            </div>
+            <div>
+                <!--Sign In button redirects to home.html page-->
+                <button class="btn btn-primary btn-sm" type="submit">Sign In</button>
+            </div>
+        </div>
+    </form>
 
 </body>
 </html>
