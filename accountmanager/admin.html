@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Admin: View all account info</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+        // this function display all account info
+        function loadAccounts() {
+            var webMethod = "AccountServices.asmx/GetAllAccountInfo";
+            var parameters = "{}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    console.log("function started");
+                    console.log(array);
+
+                    var infoArray = array.d;
+                    var tableRowNumber = 1;
+                    console.log(infoArray);
+
+                    for (var i = 0; i < infoArray.length; i++) {
+
+                        var row = document.getElementById("infoTableId").insertRow(tableRowNumber);
+                        var cell0 = row.insertCell(0);
+                        var cell1 = row.insertCell(1);
+                        var cell2 = row.insertCell(2);
+                        var cell3 = row.insertCell(3);
+                        var cell4 = row.insertCell(4);
+                        var cell5 = row.insertCell(5);
+                        var cell6 = row.insertCell(6);
+
+                        cell0.innerHTML = infoArray[i]["userID"];
+                        cell1.innerHTML = infoArray[i]["firstName"];
+                        cell2.innerHTML = infoArray[i]["lastName"];
+                        cell3.innerHTML = infoArray[i]["employeeID"];
+                        cell4.innerHTML = infoArray[i]["email"];
+                        cell5.innerHTML = infoArray[i]["department"];
+                        cell6.innerHTML = infoArray[i]["position"];
+
+                        tableRowNumber += 1;
+                    }
+                },
+
+                error: function (e) {
+                    alert("this code will only execute if javascript is unable to access the webservice");
+                }
+            });
+        }
+    </script>
+
+    <style>
+        #infoTableId th, #infoTableId td {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        #infoTableId {
+            border: 1px solid black;
+            background-color: lightblue;
+        }
+    </style>
+
+</head>
+
+<body onload="loadAccounts()">
+    <div class="accountInfo">
+        <h1>User Information</h1>
+        <hr />
+
+        <table class="InfoTable" id="infoTableId">
+            <tr>
+                <td>User ID</td>
+                <td>First Name</td>
+                <td>Last Name</td>
+                <td>Employee ID</td>
+                <td>Email Address</td>
+                <td>Department</td>
+                <td>Position</td>
+            </tr>   
+        </table>
+    </div>
+
+</body>
+</html>

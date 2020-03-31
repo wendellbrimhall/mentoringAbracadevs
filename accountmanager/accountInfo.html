@@ -10,7 +10,7 @@
 
         var infoArray;
 
-        //this function grabs and display account info
+        // this function grabs and display account info
         function LoadInfo() {
             var webMethod = "AccountServices.asmx/ViewAccountInfo";
             var parameters = "{}";
@@ -27,12 +27,13 @@
 
                     infoArray = array.d;
                     console.log(infoArray);
-                    console.log(infoArray[0]["firstName"]);
+                    //console.log(infoArray[0]["firstName"]);
 
                     document.getElementById("firstNameId").value = infoArray[0]["firstName"];
                     document.getElementById("lastNameId").value = infoArray[0]["lastName"];
                     document.getElementById("employeeIDId").value= infoArray[0]["employeeID"];
                     document.getElementById("emailId").value = infoArray[0]["email"];
+                    document.getElementById("departmentId").value = infoArray[0]["department"];
                     document.getElementById("positionId").value = infoArray[0]["position"];
                 }
             });
@@ -67,6 +68,12 @@
         <div class="form-group">
             <label>Email Address: </label>
             <input type="text" id="emailId">
+        </div>
+        <br />
+
+        <div class="form-group">
+            <label>Department: </label>
+            <input type="text" id="departmentId">
         </div>
         <br />
 
