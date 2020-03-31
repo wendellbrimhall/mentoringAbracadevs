@@ -160,15 +160,12 @@ namespace accountmanager
             var email = Session["email"];
             var department = Session["department"];
             var position = Session["position"];
-            //var admin = Convert.ToInt32(Session["admin"]);
-
-            //string sqlSelect;
 
             DataTable sqlDt = new DataTable("user");
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
                         
-            // if the user is not a admin, only his/ her account info will be displayed 
+            // if the user is not an admin, only his/ her account info will be displayed 
             //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
 
             // testing
@@ -207,10 +204,9 @@ namespace accountmanager
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 
-            // if the user is a admin, all users' account info will be displayed 
+            // if the user is an admin, all users' account info will be displayed 
             //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
             string sqlSelect = "SELECT * FROM Users_mentoring WHERE admin = '0';";
-
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -231,14 +227,13 @@ namespace accountmanager
                     employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
                     email = sqlDt.Rows[i]["email"].ToString(),
                     department = sqlDt.Rows[i]["department"].ToString(),
-                    position = sqlDt.Rows[i]["position"].ToString()
+                    position = sqlDt.Rows[i]["position"].ToString(),
+                    status = sqlDt.Rows[i]["status"].ToString()
                 });
             }
             //convert the list of accounts to an array and return!
             return allAccountInfo.ToArray();
         }
-
-
 
         [WebMethod(EnableSession = true)]
         public string RecordSurvey(string q1, string q2, string q3, string q4 )

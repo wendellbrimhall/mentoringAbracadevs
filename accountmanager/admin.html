@@ -38,6 +38,7 @@
                         var cell4 = row.insertCell(4);
                         var cell5 = row.insertCell(5);
                         var cell6 = row.insertCell(6);
+                        var cell7 = row.insertCell(7);
 
                         cell0.innerHTML = infoArray[i]["userID"];
                         cell1.innerHTML = infoArray[i]["firstName"];
@@ -46,6 +47,7 @@
                         cell4.innerHTML = infoArray[i]["email"];
                         cell5.innerHTML = infoArray[i]["department"];
                         cell6.innerHTML = infoArray[i]["position"];
+                        cell7.innerHTML = infoArray[i]["status"];
 
                         tableRowNumber += 1;
                     }
@@ -86,6 +88,7 @@
                 <td>Email Address</td>
                 <td>Department</td>
                 <td>Position</td>
+                <td>Status</td>
             </tr>   
         </table>
     </div>

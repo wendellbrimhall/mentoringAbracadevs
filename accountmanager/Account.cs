@@ -19,6 +19,7 @@ namespace accountmanager
         public string department;
         public string position;
         public int surveyComplete;
+        public string status;
 
     }
 }
