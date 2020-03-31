@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html>
 <head>
     <meta charset="utf-8" />
-    <title>Log In</title>
 
+    <title>Log In</title>
     <script>
 
         //logs on user using email and pasword
@@ -39,29 +39,56 @@
                 }
             });
         }
+
+        //logs the user off both at the client and at the server
+        function LogOutHandler() {
+
+            var webMethod = "AccountServices.asmx/LogOff";
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+
+                    if (msg.d) {
+                        window.location.replace("addUser.html");
+                    }
+                    else {
+                    }
+                },
+                error: function (e) {
+                    alert("boo...");
+                }
+            });
+        }
+
     </script>
 
 </head>
 
 <body>
-
-    <h1>Log In</h1>
-    <form  onsubmit="LogOnHandler($('#email_input').val(), $('#password_input').val()); return false;">
-        <div class="row align-items-center">
-            <div>
-                <input type="text" id="email_input"
-                       placeholder="Email" autocomplete="off" required>
-            </div>
-            <div>
-                <input id="password_input" type="password"
-                       placeholder="Password" required>
-            </div>
-            <div>
-                <!--Sign In button redirects to home.html page-->
-                <button class="btn btn-primary btn-sm" type="submit">Sign In</button>
-            </div>
+    <header>
+        <div>
+            <h1>Log In</h1>
+            <form onsubmit="LogOnHandler($('#email_input').val(), $('#password_input').val()); return false;">
+                <div>
+                    <div>
+                        <input type="text" id="email_input"
+                               placeholder="Email" autocomplete="off" required>
+                    </div>
+                    <div>
+                        <input id="password_input" type="password"
+                               placeholder="Password" required>
+                    </div>
+                        <button type="submit">Sign In</button>
+                        <button onclick='LogOutHandler()' href='/home.html'>Sign Out</button>
+            </form>
         </div>
-    </form>
+    </header>
 
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+   
 </body>
 </html>
