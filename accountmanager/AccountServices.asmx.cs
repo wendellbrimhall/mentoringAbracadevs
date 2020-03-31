@@ -67,6 +67,7 @@ namespace accountmanager
                 Session["last_name"] = sqlDt.Rows[0]["lastName"];
                 Session["employee_id"] = sqlDt.Rows[0]["employeeID"];
                 Session["email"] = sqlDt.Rows[0]["email"];
+                Session["department"] = sqlDt.Rows[0]["department"];
                 Session["position"] = sqlDt.Rows[0]["position"];
                 Session["status"] = sqlDt.Rows[0]["status"];
                 Session["admin"] = sqlDt.Rows[0]["admin"];
@@ -154,29 +155,21 @@ namespace accountmanager
             var last_name = Session["last_name"];
             var employee_id = Session["employee_id"];
             var email = Session["email"];
+            var department = Session["department"];
             var position = Session["position"];
-            var admin = Convert.ToInt32(Session["admin"]);
+            //var admin = Convert.ToInt32(Session["admin"]);
 
-            string sqlSelect;
+            //string sqlSelect;
 
             DataTable sqlDt = new DataTable("user");
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+                        
+            // if the user is not a admin, only his/ her account info will be displayed 
+            //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
 
-            if (admin == 0)
-            {
-                // if the user is not a admin, only his/ her account info will be displayed 
-                //sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
-
-                // testing
-                sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='eee@gmail.com';";
-            }
-            else
-            {
-                // if the user is a admin, all users' account info will be displayed 
-                //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
-                sqlSelect = "SELECT * FROM Users_mentoring;";
-            }
+            // testing
+            string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='eee@gmail.com';";
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -196,12 +189,53 @@ namespace accountmanager
                     lastName = sqlDt.Rows[i]["lastName"].ToString(),
                     employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
                     email = sqlDt.Rows[i]["email"].ToString(),
+                    department = sqlDt.Rows[i]["department"].ToString(),
                     position = sqlDt.Rows[i]["position"].ToString()
                 });
             }
             //convert the list of accounts to an array and return!
             return accountInfo.ToArray();
         }
+
+        [WebMethod(EnableSession = true)]
+        public Account[] GetAllAccountInfo()
+        {
+            DataTable sqlDt = new DataTable("users");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            // if the user is a admin, all users' account info will be displayed 
+            //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
+            string sqlSelect = "SELECT * FROM Users_mentoring WHERE admin = '0';";
+
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            //gonna use this to fill a data table
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            //loop through each row in the dataset
+            List<Account> allAccountInfo = new List<Account>();
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                allAccountInfo.Add(new Account
+                {
+                    userID = Convert.ToInt32(sqlDt.Rows[i]["userID"]),
+                    firstName = sqlDt.Rows[i]["firstName"].ToString(),
+                    lastName = sqlDt.Rows[i]["lastName"].ToString(),
+                    employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
+                    email = sqlDt.Rows[i]["email"].ToString(),
+                    department = sqlDt.Rows[i]["department"].ToString(),
+                    position = sqlDt.Rows[i]["position"].ToString()
+                });
+            }
+            //convert the list of accounts to an array and return!
+            return allAccountInfo.ToArray();
+        }
+
+
 
 
         //EXAMPLE OF AN INSERT QUERY WITH PARAMS PASSED IN.  BONUS GETTING THE INSERTED ID FROM THE DB!
