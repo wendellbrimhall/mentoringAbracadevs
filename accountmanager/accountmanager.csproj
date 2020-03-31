@@ -95,6 +95,7 @@
     <Content Include="addUser.html" />
     <Content Include="accountInfo.html" />
     <Content Include="admin.html" />
+    <Content Include="home.html" />
     <Content Include="logOn.html" />
     <Content Include="questionnaireA.html" />
     <Content Include="questionnaireB.html" />
