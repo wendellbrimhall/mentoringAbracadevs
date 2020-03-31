@@ -414,6 +414,68 @@ namespace accountmanager
 			sqlConnection.Close();
 		}
 
+        [WebMethod(EnableSession = true)]
+        public string RecordSurvey(string q1, string q2, string q3, string q4 )
+        {
+
+
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //var user_id = Session["user_id"];
+            var user_id = 1;
+
+            string sqlSelect = "INSERT INTO `abracadevs`.`survey_mentoring` (`userID`, `q1`, `q2`, `q3`, `q4`) VALUES ('"+ user_id + "', '"+ q1 +"', '"+ q2 +"', '"+ q3 + "', '"+ q4 +"');";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+          
+
+            sqlConnection.Open();
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+                var str = "Success";
+                SurveyComplete(user_id);
+
+                //after the reservation is made, the SendReservationConfirmation function is called to notify the user that their spot has been reserved
+                return str;
+            }
+            catch (Exception e)
+            {
+                var str = e.ToString();
+                return str;
+            }
+            sqlConnection.Close();
+
+        }
+
+        public void SurveyComplete(int user_id)
+        {
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            string sqlSelect = "UPDATE `abracadevs`.`Users_mentoring` SET `surveyComplete` = '1' WHERE(`userID` = '"+ user_id + "');";
+
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+
+
+            sqlConnection.Open();
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+               
+            }
+            catch (Exception e)
+            {
+                
+            }
+            sqlConnection.Close();
+
+
+        }
 
 
 
