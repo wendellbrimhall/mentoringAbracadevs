@@ -11,10 +11,11 @@
         function AddUserHandler() {
             var webMethod = "AccountServices.asmx/AddUser";
 
+            console.log("add_user started");
             //This code will toggle the submit button to disabled while the sql query is running
             $('#Submit').prop('disabled', function (i, v) { return !v; });
             console.log("code ran")
-            var parameters = "{\"first\":\"" + encodeURI($('#firstname-register').val()) + "\",\"last\":\"" + encodeURI($('#lastname-register').val()) + "\",\"empID\":\"" + encodeURI($('#empId-register').val()) + "\",\"email\":\"" + encodeURI($('#email-register').val()) + "\",\"position\":\"" + encodeURI($('#pos_register').val()) + "\",\"department\":\"" + encodeURI($('#dept').val()) + "\",\"pw\":\"" + encodeURI($('#password-register').val()) + "\"}";
+            var parameters = "{\"first\":\"" + encodeURI($('#firstname-register').val()) + "\",\"last\":\"" + encodeURI($('#lastname-register').val()) + "\",\"empID\":\"" + encodeURI($('#empId-register').val()) + "\",\"email\":\"" + encodeURI($('#email-register').val()) + "\",\"position\":\"" + encodeURI($('#pos_register').val()) + "\",\"department\":\"" + encodeURI($('#dept').val()) + "\",\"pw\":\"" + encodeURI($('#password-register').val()) + "\",\"status\":\"" + encodeURI($('#status').val()) + "\"}";
 
 
             console.log(parameters)
@@ -33,6 +34,7 @@
                     if (responseFromServer == "Success!") {
                         alert("User has been added.")
                         document.getElementById("userForm").reset();
+                        $('#Submit').prop('disabled', function (i, v) { return !v; });
                     }
                     else if (responseFromServer == "email") {
                         $('#Submit').prop('disabled', function (i, v) { return !v; });
@@ -89,6 +91,15 @@
                         <label for="position-register" class="text-muted mb-1"><small>Postition</small></label>
                         <input id="pos_register" class="form-control"
                                placeholder="Position" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status-register" class="text-muted mb-1"><small>Mentor/Mentee</small></label>
+                        <select id="status" class="form-control">
+                            <option value="Mentor">Mentor</option>
+                            <option value="Mentee">Mentee</option>
+                            
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="department-register" class="text-muted mb-1"><small>Department</small></label>

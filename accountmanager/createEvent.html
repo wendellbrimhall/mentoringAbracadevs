@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        function search() {
+            
+            var selection = [];
+            var questionNumber = ["q1", "q2", "q3", "q4", "q5"];
+            var searchColumn = [];
+            var searchString = [];
+            var sqlQuery;
+
+
+            var question1 = $("#q1").val();
+            var question2 = $("#q2").val();
+            var question3 = $("#q3").val();
+            var question4 = $("#q4").val();
+            var question5 = $("#q5").val();
+            selection.push(question1);
+            selection.push(question2);
+            selection.push(question3);
+            selection.push(question4);
+            selection.push(question5);
+
+            console.log(question1);
+            console.log(question2);
+            console.log(question3);
+            console.log(question4);
+            console.log(question5);
+            console.log(selection);
+
+            for (var i = 0; i < selection.length; i++) {
+                if (selection[i] != "-") {
+                    searchColumn.push(questionNumber[i]);
+                    searchString.push(selection[i])
+                }
+
+            }//end for
+
+            console.log(searchColumn.length);
+            console.log(searchString);
+
+            if (searchColumn.length == 5) {
+                sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";
+                sqlQuery = sqlQuery + " AND " + searchColumn[1] + " like '%" + searchString[1] + "%'";
+                sqlQuery = sqlQuery + " AND " + searchColumn[2] + " like '%" + searchString[2] + "%'";
+                sqlQuery = sqlQuery + "AND " + searchColumn[3] + " like '%" + searchString[3] + "%'";
+                sqlQuery = sqlQuery + " And " + searchColumn[4] + " like '%" + searchString[4] + "%'";
+                callDb(sqlQuery);
+            } else if (searchColumn.length == 4) {
+                sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";
+                sqlQuery = sqlQuery + " AND " + searchColumn[1] + " like '%" + searchString[1] + "%'";
+                sqlQuery = sqlQuery + " AND " + searchColumn[2] + " like '%" + searchString[2] + "%'";
+                sqlQuery = sqlQuery + "AND " + searchColumn[3] + " like '%" + searchString[3] + "%'";
+                callDb(sqlQuery);
+            } else if (searchColumn.length == 3) {
+                sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";
+                sqlQuery = sqlQuery + " AND " + searchColumn[1] + " like '%" + searchString[1] + "%'";
+                sqlQuery = sqlQuery + " AND " + searchColumn[2] + " like '%" + searchString[2] + "%'";
+                callDb(sqlQuery);
+            } else if (searchColumn.length == 2) {
+                sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";
+                sqlQuery = sqlQuery + " AND " + searchColumn[1] + " like '%" + searchString[1] + "%'";
+                callDb(sqlQuery);
+            } else if (searchColumn.length == 1) {
+                sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";     
+                callDb(sqlQuery);
+            } else if (searchColumn.length == 0) {
+                alert("Please select at least one question.");
+                
+            } 
+       
+
+                console.log(sqlQuery);
+
+
+
+        }//end search()
+
+        function callDb(sql) {
+            var webMethod = "AccountServices.asmx/SearchSurveys";
+            var parameters = "{ \"s\":\"" + sql + "\" }";
+            console.log(parameters);
+
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    console.log("function started");
+                    console.log(array);
+                    var infoArray = array.d;
+                    var tableRowNumber = 1;
+                    var recordId = [];
+                    console.log(infoArray);
+                    clearResultsTable(document.getElementById('infoTableId'));
+                    if (infoArray.length > 0) {
+                        var eventButton = document.getElementById('createEventButton');
+                        eventButton.innerHTML = "<br /><button id='create' onclick='createEvent()'>Create Event</button>";
+                    }
+
+                    for (var i = 0; i < infoArray.length; i++) {
+                        if (recordId.includes(infoArray[i]["userID"])) {
+
+                        } else {
+                            var row = document.getElementById("infoTableId").insertRow(tableRowNumber);
+                            var cell0 = row.insertCell(0);
+                            var cell1 = row.insertCell(1);
+                            var cell2 = row.insertCell(2);
+                            var cell3 = row.insertCell(3);
+                            var cell4 = row.insertCell(4);
+                            var cell5 = row.insertCell(5);
+                            var cell6 = row.insertCell(6);
+                            var cell7 = row.insertCell(7);
+
+                            cell0.innerHTML = infoArray[i]["userID"];
+                            cell1.innerHTML = infoArray[i]["firstName"];
+                            cell2.innerHTML = infoArray[i]["lastName"];
+                            cell3.innerHTML = infoArray[i]["employeeID"];
+                            cell4.innerHTML = infoArray[i]["email"];
+                            cell5.innerHTML = infoArray[i]["department"];
+                            cell6.innerHTML = infoArray[i]["position"];
+                            cell7.innerHTML = infoArray[i]["status"];
+
+                            tableRowNumber += 1;
+                            recordId.push(infoArray[i]["userID"]);
+                        }//end else
+                    }
+                    
+                },
+
+                error: function (msg) {
+                    var message = msg.d;
+                    alert(message);
+                }
+            });
+            
+        }
+        
+    function clearResultsTable(table) {
+    //function to clear the results
+	    for (var i = table.rows.length; i > 1; i--) {
+		table.deleteRow(i-1);
+	    }
+    }
+
+        function createEvent() {
+
+        }
+    </script>
+
+
+</head>
+<body>
+
+    <div>
+        <div>
+            <label for="q1">When are you most available?</label>
+            <br />
+            <select id="q1">
+                <option value="-">-</option>
+                <option value="Midday">Midday</option>
+                <option value="Weekends">Weekends</option>
+                <option value="Weeknights">Weeknights</option>
+            </select>
+        </div>
+        <br />
+        <br />
+        <div>
+            <label for="q2">Do you like to drink?</label>
+            <br />
+            <select id="q2">
+                <option value="-">-</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+        <br />
+        <br />
+
+        <div>
+            <label for="q3">What are your favorite type of foods?</label>
+            <br />
+            <select id="q3">
+                <option value="-">-</option>
+                <option value="Soul">Soul</option>
+                <option value="Japanese">Japanese</option>
+                <option value="Mexican">Mexican</option>
+                <option value="Italian">Italian</option>
+                <option value="Mediterranean">Mediterranean</option>
+                <option value="Chinese">Chinese</option>
+            </select>
+        </div>
+        <br />
+        <br />
+        <div>
+            <label for="q4">What are your favorite sports?</label>
+            <br />
+            <select id="q4">
+                <option value="-">-</option>
+                <option value="Football">Football</option>
+                <option value="Baseball">Baseball</option>
+                <option value="Basketball">Basketball</option>
+                <option value="Hockey">Hockey</option>
+            </select>
+        </div>
+        <br />
+        <br />
+        <div>
+            <label for="q5">What type of outdoor activities do you enjoy?</label>
+            <br />
+            <select id="q5">
+                <option value="-">-</option>
+                <option value="Hiking">Hiking</option>
+                <option value="Biking">Biking</option>
+                <option value="Kayaking">Kayaking</option>
+                <option value="Skiing">Skiing</option>
+                <option value="Camping">Camping</option>
+            </select>
+        </div>
+        <br />
+        <br />
+        <div>
+            <button id="search" onclick="search()">Submit</button>
+        </div>
+        <div id="createEventButton">
+            
+        </div>
+    </div>
+
+    <div class="accountInfo">
+    <h1>Search results</h1>
+    <hr />
+
+    <table class="InfoTable" id="infoTableId">
+        <tr>
+            <th>User ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Employee ID</th>
+            <th>Email Address</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Status</th>
+        </tr>
+    </table>
+    </div>
+
+</body>
+</html>

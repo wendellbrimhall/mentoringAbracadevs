@@ -94,7 +94,7 @@ namespace accountmanager
         }
 
         [WebMethod]
-        public string AddUser(string first, string last, string empID, string email, string position, string department, string pw )
+        public string AddUser(string first, string last, string empID, string email, string position, string department, string pw, string status )
         {
 
             ///webmethod to a newuser to the database
@@ -105,7 +105,7 @@ namespace accountmanager
             //string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `password`) " +
             // "VALUES('"+ first +"', '"+ last +"', '"+ empID + "', '" + email + "', '" + position + "', '" + status + "', '" + pw + "';";
 
-            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `admin`, `department`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, 'pending', '0', @departmentValue, SHA1(@passwordValue));";
+            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `admin`, `department`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, '0', @departmentValue, SHA1(@passwordValue));";
 
             //"VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, SHA1(@passwordValue);)";
 
@@ -120,6 +120,7 @@ namespace accountmanager
             sqlCommand.Parameters.AddWithValue("@positionValue", HttpUtility.UrlDecode(position));
             sqlCommand.Parameters.AddWithValue("@departmentValue", HttpUtility.UrlDecode(department));
             sqlCommand.Parameters.AddWithValue("@passwordValue", HttpUtility.UrlDecode(pw));
+            sqlCommand.Parameters.AddWithValue("@statusValue", HttpUtility.UrlDecode(status));
 
             sqlConnection.Open();
             try
@@ -331,6 +332,7 @@ namespace accountmanager
                 var enableSSL = true;
                 var fromAddress = "cis440parking@gmail.com";
                 var password = "!!Abracadevs";
+                var replyToAddr = "wendell334@gmail.com";
 
 
                 mail.From = new MailAddress(fromAddress);
@@ -338,6 +340,7 @@ namespace accountmanager
                 mail.Subject = subject;
                 mail.Body = body;
                 mail.IsBodyHtml = true;
+                //mail.ReplyTo = new MailAddress(replyToAddr); 
 
                 using (SmtpClient smtp = new SmtpClient(smtpAddr, portNumber))
                 {
@@ -349,6 +352,42 @@ namespace accountmanager
             }
         }
 
+        [WebMethod(EnableSession = true)]
+        public Account[] SearchSurveys(string s)
+        {
+            DataTable sqlDt = new DataTable("users");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            ;
+            string sqlSelect = "SELECT * FROM Users_mentoring left JOIN survey_mentoring ON Users_mentoring.userID = survey_mentoring.userID " + s + ";";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            //gonna use this to fill a data table
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            //loop through each row in the dataset
+            List<Account> allAccountInfo = new List<Account>();
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                allAccountInfo.Add(new Account
+                {
+                    userID = Convert.ToInt32(sqlDt.Rows[i]["userID"]),
+                    firstName = sqlDt.Rows[i]["firstName"].ToString(),
+                    lastName = sqlDt.Rows[i]["lastName"].ToString(),
+                    employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
+                    email = sqlDt.Rows[i]["email"].ToString(),
+                    department = sqlDt.Rows[i]["department"].ToString(),
+                    position = sqlDt.Rows[i]["position"].ToString(),
+                    status = sqlDt.Rows[i]["status"].ToString()
+                });
+            }
+            //convert the list of accounts to an array and return!
+            return allAccountInfo.ToArray();
+        }
 
     }
 }
