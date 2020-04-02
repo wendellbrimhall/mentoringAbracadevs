@@ -1,10 +1,18 @@
 ﻿<!DOCTYPE html>
+<html lang="en">
 
-<html>
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"
+            integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0"
+            crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <title>Home</title>
 
-    <title>Log In</title>
     <script>
 
         //logs on user using email and pasword
@@ -48,7 +56,7 @@
                                 alert("boo...");
                             }
                         });
-                     
+
                     }
                     else {
                         alert("login failed");
@@ -59,7 +67,6 @@
                 }
             });
         }
-
         //logs the user off both at the client and at the server
         function LogOutHandler() {
 
@@ -88,27 +95,65 @@
 </head>
 
 <body>
-    <header>
-        <div>
-            <h1>Log In</h1>
-            <form onsubmit="LogOnHandler($('#email_input').val(), $('#password_input').val()); return false;">
-                <div>
-                    <div>
-                        <input type="text" id="email_input"
-                               placeholder="Email" autocomplete="off" required>
+    <header class="header-bar mb-3">
+        <div class="container d-flex flex-column flex-md-row align-items-center p-3">
+            <h4 class="my-0 mr-md-auto font-weight-normal"><a href="/" class="text-white">AbracaParking</a></h4>
+            <form class="mb-0 pt-2 pt-md-0"
+                  onsubmit="LogOnHandler($('#email_input').val(), $('#password_input').val()); return false;">
+
+                <div class="row align-items-center">
+                    <div class="col-md mr-0 pr-md-0 mb-3 mb-md-0">
+                        <input type="text" id="email_input" placeholder="Email" autocomplete="off" required>
                     </div>
-                    <div>
-                        <input id="password_input" type="password"
-                               placeholder="Password" required>
+                    <div class="col-md mr-0 pr-md-0 mb-3 mb-md-0">
+                        <input id="password_input" type="password" placeholder="Password" required>
                     </div>
-                        <button type="submit">Sign In</button>
-                        <button onclick='LogOutHandler()' href='/home.html'>Sign Out</button>
+                    <div class="col-md-auto">
+                        <button class="btn btn-primary btn-sm" type="submit">Sign In</button>
+                    </div>
+                </div>
             </form>
         </div>
     </header>
 
 
+    <div class="container py-md-5">
+        <div class="row align-items-center">
+            <div class="col-lg-7 py-3 py-md-5">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <img src="./mentor2.png" alt="mentoringImage" width="100%" height="450px">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5 pl-lg-5 pb-3 py-lg-5">
+                <form>
+                    <button type="submit" class="py-3 mt-4 btn btn-lg btn-primary btn-block" id="createAccount"
+                            formaction="addUser.html">
+                        Request Account
+                    </button>
+                </form>
+            </div>
+        </div>
+        <footer class="border-top text-center small text-muted py-3">
+            <p class="m-0">
+                Copyright &copy; 2020 <a href="/" class="text-muted">AbracaMentoring</a>. All rights
+                reserved.
+            </p>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <script>$('[data-toggle="tooltip"]').tooltip()</script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-   
+
+
 </body>
+
 </html>
