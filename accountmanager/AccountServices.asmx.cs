@@ -352,7 +352,7 @@ namespace accountmanager
             }
         }
 
-        [WebMethod(EnableSession = true)]
+        [WebMethod]
         public Account[] SearchSurveys(string s)
         {
             DataTable sqlDt = new DataTable("users");
@@ -388,6 +388,52 @@ namespace accountmanager
             //convert the list of accounts to an array and return!
             return allAccountInfo.ToArray();
         }
+
+        [WebMethod]
+        public string NewEvent(Array inviteList, string name, string date, string location, string type, string description)
+        {
+
+
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            
+
+
+            string sqlSelect = "INSERT INTO `abracadevs`.`Events_mentoring` (`eventName`, `date`, `location`, `type`, `description`) VALUES ('"+ name +"', '"+ date +"', '"+ location +"', '"+ type +"', '"+ description +"'); SELECT LAST_INSERT_ID();";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+
+
+            sqlConnection.Open();
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+                var str = "Success";
+
+                int eventID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                return str;
+                       
+            }
+            catch (Exception e)
+            {
+                var str = e.ToString();
+                return str;
+            }
+            sqlConnection.Close();
+
+        }
+
+        [WebMethod]
+        public void Invite(Array inviteList, int eventID)
+        {
+
+        }
+
+
+
 
     }
 }

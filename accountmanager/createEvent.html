@@ -5,7 +5,51 @@
     <title></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
+        //var modal = document.getElementById("myModal");
+        var modal; 
+        
+        var firstNameList = [];
+        var lastNameList = [];
+        var emailList = [];
 
+        function initialize(){
+            modal = document.getElementById("myModal");
+             
+            
+        }
+
+
+        function createNewEvent() {
+            var checkboxStr="";
+            modal.style.display = "block";
+
+            console.log(firstNameList);
+            console.log(lastNameList);
+            console.log(emailList);
+
+            for (var i = 0; i < emailList.length; i++) {
+                checkboxStr += "<input type='checkbox' name='invite'  value='" + emailList[i] + "'><label>" + firstNameList[i] +" "+ lastNameList[i] +"</label > <br>"
+            }//end for
+
+            $("#addAttendeeList").append(checkboxStr);
+         }//end createNewEvent
+ 
+        function submitEvent() {
+            var inviteList = [];
+
+
+
+            $.each($("input[name='invite']:checked"), function () {
+                inviteList.push($(this).val());
+            });
+            console.log(inviteList);
+
+
+
+        }
+ 
+        
+ 
         function search() {
             
             var selection = [];
@@ -103,7 +147,7 @@
                     clearResultsTable(document.getElementById('infoTableId'));
                     if (infoArray.length > 0) {
                         var eventButton = document.getElementById('createEventButton');
-                        eventButton.innerHTML = "<br /><button id='create' onclick='createEvent()'>Create Event</button>";
+                        eventButton.innerHTML = "<br /><button id='create' onclick='createNewEvent()'>Create Event</button>";
                     }
 
                     for (var i = 0; i < infoArray.length; i++) {
@@ -129,6 +173,10 @@
                             cell6.innerHTML = infoArray[i]["position"];
                             cell7.innerHTML = infoArray[i]["status"];
 
+                            firstNameList.push(infoArray[i]["firstName"]);
+                            lastNameList.push(infoArray[i]["lastName"]);
+                            emailList.push(infoArray[i]["email"]);
+
                             tableRowNumber += 1;
                             recordId.push(infoArray[i]["userID"]);
                         }//end else
@@ -151,14 +199,12 @@
 	    }
     }
 
-        function createEvent() {
-
-        }
+       
     </script>
 
 
 </head>
-<body>
+<body onload="initialize()">
 
     <div>
         <div>
@@ -231,27 +277,134 @@
             <button id="search" onclick="search()">Submit</button>
         </div>
         <div id="createEventButton">
-            
+
         </div>
     </div>
 
     <div class="accountInfo">
-    <h1>Search results</h1>
-    <hr />
+        <h1>Search results</h1>
+        <hr />
 
-    <table class="InfoTable" id="infoTableId">
-        <tr>
-            <th>User ID</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Employee ID</th>
-            <th>Email Address</th>
-            <th>Department</th>
-            <th>Position</th>
-            <th>Status</th>
-        </tr>
-    </table>
+        <table class="InfoTable" id="infoTableId">
+            <tr>
+                <th>User ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Employee ID</th>
+                <th>Email Address</th>
+                <th>Department</th>
+                <th>Position</th>
+                <th>Status</th>
+            </tr>
+        </table>
     </div>
+    <style>
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
 
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .close:hover,
+            .close:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+
+    </style>
+
+    <div id="myModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span id="xbutton" class="close">&times;</span>
+            <h3>Create New Event</h3>
+            <br />
+            <form>
+                <span>
+                    <Label>Event Name</Label>
+                    <input name="eventName" id="eventName" type="text"
+                           placeholder="Event Name" autocomplete="off" required />
+                </span>
+                <br />
+                <span>
+                    <Label>Date</Label>
+                    <input name="eventDate" id="eventDate" type="text"
+                           placeholder="YYYY/MM/DD" autocomplete="off" required />
+                </span>
+                <br />
+                <span>
+                    <Label>location</Label>
+                    <input name="location" id="location" type="text"
+                           placeholder="Enter Location" autocomplete="off" required />
+                </span>
+                <br />
+                <span>
+                    <label for="type-register">Type</label>
+                    <select id="type">
+                        <option value="Meal">Meal</option>
+                        <option value="Sporting">Sporting</option>
+                        <option value="Outdoors">Outdoors</option>
+                    </select>
+                </span>
+                <br />
+
+
+                <span>
+                    <Label>Description</Label>
+                    <textarea name="textarea" style="width:250px;height:50px;" id="description"></textarea>
+                </span>
+                <br />
+                <Label>Invite:</Label>
+                <div id="addAttendeeList">
+
+                </div>
+
+                <button onclick="submitEvent()">Create</button>
+                <button onclick="cancelEvent()">Cancel</button>
+
+            </form>
+            
+
+            
+        </div>
+
+    </div>
+    <script>
+        var cls = document.getElementById("xbutton");
+
+        cls.onclick = function () {
+            modal.style.display = "none";
+        }
+
+        
+
+    </script>
 </body>
 </html>
