@@ -100,14 +100,9 @@ namespace accountmanager
             ///webmethod to a newuser to the database
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 
-            //string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `password`) " +
-            // "VALUES('"+ first +"', '"+ last +"', '"+ empID + "', '" + email + "', '" + position + "', '" + status + "', '" + pw + "';";
-
-<<<<<<< HEAD
+     
             string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `admin`, `department`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, '0', @departmentValue, SHA1(@passwordValue));";
-=======
-            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `admin`, `department`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, 'mentee', '0', @departmentValue, SHA1(@passwordValue));";
->>>>>>> info4
+
 
             //"VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, SHA1(@passwordValue);)";
 
@@ -340,18 +335,7 @@ namespace accountmanager
             }
         }
 
-<<<<<<< HEAD
         [WebMethod(EnableSession = true)]
-        public Account[] SearchSurveys(string s)
-        {
-            DataTable sqlDt = new DataTable("users");
-
-            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-
-            ;
-            string sqlSelect = "SELECT * FROM Users_mentoring left JOIN survey_mentoring ON Users_mentoring.userID = survey_mentoring.userID " + s + ";";
-=======
-        [WebMethod]
         public Account[] GetMentors()
         {
             DataTable sqlDt = new DataTable("mentors");
@@ -361,7 +345,7 @@ namespace accountmanager
             // if the user is an admin, all users' account info will be displayed 
             //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
             string sqlSelect = "SELECT userID, firstName, lastName FROM Users_mentoring WHERE status='mentor';";
->>>>>>> info4
+
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -371,7 +355,7 @@ namespace accountmanager
             sqlDa.Fill(sqlDt);
 
             //loop through each row in the dataset
-<<<<<<< HEAD
+
             List<Account> allAccountInfo = new List<Account>();
             for (int i = 0; i < sqlDt.Rows.Count; i++)
             {
@@ -389,7 +373,7 @@ namespace accountmanager
             }
             //convert the list of accounts to an array and return!
             return allAccountInfo.ToArray();
-=======
+
             List<Account> allMentors= new List<Account>();
             for (int i = 0; i < sqlDt.Rows.Count; i++)
             {
@@ -407,8 +391,104 @@ namespace accountmanager
             }
             //convert the list of accounts to an array and return!
             return allMentors.ToArray();
->>>>>>> info4
+
         }
+
+
+        [WebMethod(EnableSession = true)]
+        public Account[] SearchSurveys(string s)
+        {
+            DataTable sqlDt = new DataTable("users");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            ;
+            string sqlSelect = "SELECT * FROM Users_mentoring left JOIN survey_mentoring ON Users_mentoring.userID = survey_mentoring.userID " + s + ";";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            //gonna use this to fill a data table
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            //loop through each row in the dataset
+            List<Account> allAccountInfo = new List<Account>();
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                allAccountInfo.Add(new Account
+                {
+                    userID = Convert.ToInt32(sqlDt.Rows[i]["userID"]),
+                    firstName = sqlDt.Rows[i]["firstName"].ToString(),
+                    lastName = sqlDt.Rows[i]["lastName"].ToString(),
+                    employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
+                    email = sqlDt.Rows[i]["email"].ToString(),
+                    department = sqlDt.Rows[i]["department"].ToString(),
+                    position = sqlDt.Rows[i]["position"].ToString(),
+                    status = sqlDt.Rows[i]["status"].ToString()
+                });
+            }
+            //convert the list of accounts to an array and return!
+            return allAccountInfo.ToArray();
+        }
+
+
+        [WebMethod]
+        public string NewEvent(string inviteList, string name, string date, string location, string type, string description)
+        {
+
+
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            
+
+
+            string sqlSelect = "INSERT INTO `abracadevs`.`Events_mentoring` (`eventName`, `date`, `location`, `type`, `description`) VALUES ('"+ name +"', '"+ date +"', '"+ location +"', '"+ type +"', '"+ description +"'); SELECT LAST_INSERT_ID();";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+
+
+            sqlConnection.Open();
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+                var str = "Success";
+
+                int eventID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                Invite(inviteList, eventID);
+
+                return str;
+                       
+            }
+            catch (Exception e)
+            {
+                var str = e.ToString();
+                return str;
+            }
+            sqlConnection.Close();
+
+        }
+
+        [WebMethod]
+        public void Invite(string inviteList, int eventID)
+        {
+
+            for ( int i = 0; i < inviteList.Length; i++)
+            {
+
+
+
+            }
+
+        }
+
+
+
+    
+
 
     }
 }
