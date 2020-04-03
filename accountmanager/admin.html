@@ -12,6 +12,8 @@
 
         // this function display all account info
         function loadAccounts() {
+            var mentorList = "";
+            var mentorStr = "";
             var webMethod = "AccountServices.asmx/GetAllAccountInfo";
             var parameters = "{}";
 
@@ -30,6 +32,17 @@
                     var tableRowNumber = 1;
                     console.log(infoArray);
 
+
+                    for (var i = 0; i < infoArray.length; i++) {
+                        if (infoArray[i]["status"] == "Mentor") {
+                            mentorList +="<option>" + infoArray[i]["firstName"] + " " + infoArray[i]["lastName"] + "</option>";
+                            console.log(mentorList);
+                        }
+                    }
+
+                    mentorStr += "<select>" + mentorList + "</select>";
+                    console.log(mentorStr);
+
                     for (var i = 0; i < infoArray.length; i++) {
 
                         var row = document.getElementById("infoTableId").insertRow(tableRowNumber);
@@ -41,6 +54,7 @@
                         var cell5 = row.insertCell(5);
                         var cell6 = row.insertCell(6);
                         var cell7 = row.insertCell(7);
+                        var cell8 = row.insertCell(8);
 
                         cell0.innerHTML = infoArray[i]["userID"];
                         cell1.innerHTML = infoArray[i]["firstName"];
@@ -50,82 +64,94 @@
                         cell5.innerHTML = infoArray[i]["department"];
                         cell6.innerHTML = infoArray[i]["position"];
                         cell7.innerHTML = infoArray[i]["status"];
-
+                        if (infoArray[i]["status"] == "Mentor") {
+                            cell8.innerHTML = "-";                           
+                        } else {
+                            cell8.innerHTML = mentorStr;
+                        }
                         tableRowNumber += 1;
+
+                      
                     }
                     //tableRowLength = document.getElementById("infoTableId").rows.length;
 
-                    function loadMentors() {
-                        var webMethod = "AccountServices.asmx/GetMentors";
-                        var parameters = "{}";
-
-                        //jQuery ajax method
-                        $.ajax({
-                            type: "POST",
-                            url: webMethod,
-                            data: parameters,
-                            contentType: "application/json; charset=utf-8",
-                            dataType: "json",
-                            success: function (array) {
-                                console.log("function started");
-                                console.log(array);
-
-                                var mentorArray = array.d;
-                                var row;
-                                var rowNumber = 1;
-                                var cell;
-                                var options;
-                                var mentors;
-                          
-
-                                console.log(mentorArray);
-
-                                // testing 1
-                                
-                                for (var i = 0; i < infoArray.length; i++) {
-                                    row = document.getElementById("infoTableId").rows[rowNumber];
-                                    cell = row.insertCell(-1);
-                                    cell.innerHTML = "<select id='mentorsId'>";
-
-                                    for (var j = 0; j < mentorArray.length; j++) {
-                                        options = mentorArray[j]["firstName"] + " " + mentorArray[j]["lastName"];
-
-                                        mentors += "<option>" + options + "</option>";
-
-                                        console.log(mentors);
-                                    } 
-                                    rowNumber += 1;
-                                }
-
-                                $("#mentorsId").append(mentors);
-                                
-
-                                // testing 2
-                                /*
-                                for (var i = 0; i < infoArray.length; i++) {
-                                    row = document.getElementById("infoTableId").rows[rowNumber];
-                                    cell = row.insertCell(-1);
-                                    cell.innerHTML = "<select id='mentorsId'>"; 
-                                    rowNumber += 1;
-                                }
-
-                                for (var j = 0; j < mentorArray.length; j++) {
-                                    options = mentorArray[j]["firstName"] + " " + mentorArray[j]["lastName"];
-
-                                    mentors += "<option>" + options + "</option>";
-                                    console.log(mentors);
-
-                                   // $("#mentorsId").append("<option>" + options + "</option>");
-                                }
-
-                                $("#mentorsId").append(mentors);*/
-                            }
-                        });
-                    }
-                    loadMentors();
+                    
+                   
                 }
             });
-     }
+        }
+
+
+        function loadMentors() {
+
+            console.log("loadmentors started")
+            var webMethod = "AccountServices.asmx/GetMentors";
+            var parameters = "{}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    console.log("function started");
+                    console.log(array);
+
+                    var mentorArray = array.d;
+                    var row;
+                    var rowNumber = 1;
+                    var cell;
+                    var options;
+                    var mentors;
+
+
+                    console.log(mentorArray);
+
+                    // testing 1
+
+                    for (var i = 0; i < infoArray.length; i++) {
+                        row = document.getElementById("infoTableId").rows[rowNumber];
+                        cell = row.insertCell(-1);
+
+
+                        for (var j = 0; j < mentorArray.length; j++) {
+                            options = mentorArray[j]["firstName"] + " " + mentorArray[j]["lastName"];
+
+                            mentors += "<option>" + options + "</option>";
+
+                            console.log(mentors);
+                        }
+                        cell.innerHTML = "<select id='mentorsId'>" + mentors + "</select>";
+                        rowNumber += 1;
+                    }
+
+
+
+
+                    // testing 2
+                    /*
+                    for (var i = 0; i < infoArray.length; i++) {
+                        row = document.getElementById("infoTableId").rows[rowNumber];
+                        cell = row.insertCell(-1);
+                        cell.innerHTML = "<select id='mentorsId'>"; 
+                        rowNumber += 1;
+                    }
+
+                    for (var j = 0; j < mentorArray.length; j++) {
+                        options = mentorArray[j]["firstName"] + " " + mentorArray[j]["lastName"];
+
+                        mentors += "<option>" + options + "</option>";
+                        console.log(mentors);
+
+                       // $("#mentorsId").append("<option>" + options + "</option>");
+                    }
+
+                    $("#mentorsId").append(mentors);*/
+                }
+            });
+        }
 
     </script>
 
