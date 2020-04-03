@@ -32,14 +32,15 @@
                     var tableRowNumber = 1;
                     console.log(infoArray);
 
-
+                    //This for loop will go through the array. Any one listed as a Mentor will have their first name and last name added to a string between <option></option> elements
                     for (var i = 0; i < infoArray.length; i++) {
                         if (infoArray[i]["status"] == "Mentor") {
                             mentorList +="<option>" + infoArray[i]["firstName"] + " " + infoArray[i]["lastName"] + "</option>";
-                            console.log(mentorList);
+                            
                         }
                     }
 
+                    //Add <select></select> around our string of mentors
                     mentorStr += "<select>" + mentorList + "</select>";
                     console.log(mentorStr);
 
@@ -64,6 +65,7 @@
                         cell5.innerHTML = infoArray[i]["department"];
                         cell6.innerHTML = infoArray[i]["position"];
                         cell7.innerHTML = infoArray[i]["status"];
+                        //If someone is listed as a mentor they will not get a drop down menu. If they are not listed as mentor then a drop down menu with all mentors is added in Cell 8
                         if (infoArray[i]["status"] == "Mentor") {
                             cell8.innerHTML = "-";                           
                         } else {
