@@ -97,22 +97,7 @@
 <body>
     <header class="header-bar mb-3">
         <div class="container d-flex flex-column flex-md-row align-items-center p-3">
-            <h4 class="my-0 mr-md-auto font-weight-normal"><a href="/" class="text-white">AbracaParking</a></h4>
-            <form class="mb-0 pt-2 pt-md-0"
-                  onsubmit="LogOnHandler($('#email_input').val(), $('#password_input').val()); return false;">
-
-                <div class="row align-items-center">
-                    <div class="col-md mr-0 pr-md-0 mb-3 mb-md-0">
-                        <input type="text" id="email_input" placeholder="Email" autocomplete="off" required>
-                    </div>
-                    <div class="col-md mr-0 pr-md-0 mb-3 mb-md-0">
-                        <input id="password_input" type="password" placeholder="Password" required>
-                    </div>
-                    <div class="col-md-auto">
-                        <button class="btn btn-primary btn-sm" type="submit">Sign In</button>
-                    </div>
-                </div>
-            </form>
+            <h4 class="my-0 mr-md-center font-weight-normal"><a href="/" class="text-white">AbracaMentoring</a></h4>
         </div>
     </header>
 
@@ -122,17 +107,30 @@
             <div class="col-lg-7 py-3 py-md-5">
                 <div class="row">
                     <div class="col-lg-12">
-                        <img src="./mentor2.png" alt="mentoringImage" width="100%" height="450px">
+                        <img src="./mentor2.png" alt="mentoringImage" width="100%" height="400px">
                     </div>
                 </div>
             </div>
 
+
             <div class="col-lg-5 pl-lg-5 pb-3 py-lg-5">
-                <form>
-                    <button type="submit" class="py-3 mt-4 btn btn-lg btn-primary btn-block" id="createAccount"
-                            formaction="addUser.html">
-                        Request Account
-                    </button>
+                <form class="mb-0 pt-2 pt-md-0"
+                      onsubmit="LogOnHandler($('#email_input').val(), $('#password_input').val()); return false;">
+
+                    <div>
+                        <div class="form-group">
+                            <label for="email-register" class="text-muted mb-1"><strong>Email</strong></label>
+                            <input name="email" id="email-register" class="form-control" type="text"
+                                   placeholder="you@example.com" autocomplete="off" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password-register" class="text-muted mb-1"><strong>Password</strong></label>
+                            <input name="password" id="password-register" class="form-control" type="password"
+                                   placeholder="enter password" required />
+                        </div>
+                        <button class="py-3 mt-4 btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+                    </div>
                 </form>
             </div>
         </div>
