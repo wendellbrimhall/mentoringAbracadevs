@@ -122,6 +122,11 @@ namespace accountmanager
             sqlConnection.Open();
             try
             {
+                var subject = "Account Created";
+                var body = "<p>" + first + ",</p><br><p>An account has been created for Abracadev Mentoring. Login to start your survey.</p><p>Email: " + email + "</p><p>Password: " + pw + "</p><br><p>Thank you for using Abracadev Mentoring!</p>";
+
+                SendEmail(email, subject, body);
+
                 sqlCommand.ExecuteNonQuery();
                 return "Success!";
 
