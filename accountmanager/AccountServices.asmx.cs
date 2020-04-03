@@ -98,22 +98,19 @@ namespace accountmanager
         {
 
             ///webmethod to a newuser to the database
-
-
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 
             //string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `password`) " +
             // "VALUES('"+ first +"', '"+ last +"', '"+ empID + "', '" + email + "', '" + position + "', '" + status + "', '" + pw + "';";
 
-            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `admin`, `department`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, 'pending', '0', @departmentValue, SHA1(@passwordValue));";
+            string sqlSelect = "INSERT INTO `abracadevs`.`Users_mentoring` (`firstName`, `lastName`, `employeeID`, `email`, `position`, `status`, `admin`, `department`, `password`) VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, 'mentee', '0', @departmentValue, SHA1(@passwordValue));";
 
             //"VALUES (@fnameValue, @lnameValue, @empIdValue, @emailValue, @positionValue, @statusValue, SHA1(@passwordValue);)";
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-
-           sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(first));
+            sqlCommand.Parameters.AddWithValue("@fnameValue", HttpUtility.UrlDecode(first));
             sqlCommand.Parameters.AddWithValue("@lnameValue", HttpUtility.UrlDecode(last));
             sqlCommand.Parameters.AddWithValue("@empIdValue", HttpUtility.UrlDecode(empID));
             sqlCommand.Parameters.AddWithValue("@emailValue", HttpUtility.UrlDecode(email));
@@ -146,7 +143,6 @@ namespace accountmanager
                 }
             }
             sqlConnection.Close();
-
         }
 
         [WebMethod(EnableSession = true)]
@@ -238,9 +234,6 @@ namespace accountmanager
         [WebMethod(EnableSession = true)]
         public string RecordSurvey(string q1, string q2, string q3, string q4 )
         {
-
-
-
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
             var user_id = Session["user_id"].ToString();
             
@@ -277,11 +270,8 @@ namespace accountmanager
 
             string sqlSelect = "UPDATE `abracadevs`.`Users_mentoring` SET `surveyComplete` = '1' WHERE(`userID` = '"+ user_id + "');";
 
-
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-
 
             sqlConnection.Open();
             try
@@ -294,8 +284,6 @@ namespace accountmanager
                 
             }
             sqlConnection.Close();
-
-
         }
 
         [WebMethod(EnableSession = true)]
@@ -321,8 +309,6 @@ namespace accountmanager
         {
             var toAddress = recipient;
 
-
-
             using (MailMessage mail = new MailMessage())
             {
 
@@ -331,7 +317,6 @@ namespace accountmanager
                 var enableSSL = true;
                 var fromAddress = "cis440parking@gmail.com";
                 var password = "!!Abracadevs";
-
 
                 mail.From = new MailAddress(fromAddress);
                 mail.To.Add(toAddress);
@@ -344,11 +329,47 @@ namespace accountmanager
                     smtp.Credentials = new NetworkCredential(fromAddress, password);
                     smtp.EnableSsl = enableSSL;
                     smtp.Send(mail);
-
                 }
             }
         }
 
+        [WebMethod]
+        public Account[] GetMentors()
+        {
+            DataTable sqlDt = new DataTable("mentors");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            // if the user is an admin, all users' account info will be displayed 
+            //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
+            string sqlSelect = "SELECT userID, firstName, lastName FROM Users_mentoring WHERE status='mentor';";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            //gonna use this to fill a data table
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            //loop through each row in the dataset
+            List<Account> allMentors= new List<Account>();
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                allMentors.Add(new Account
+                {
+                    userID = Convert.ToInt32(sqlDt.Rows[i]["userID"]),
+                    firstName = sqlDt.Rows[i]["firstName"].ToString(),
+                    lastName = sqlDt.Rows[i]["lastName"].ToString()
+                    //employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
+                    //email = sqlDt.Rows[i]["email"].ToString(),
+                    //department = sqlDt.Rows[i]["department"].ToString(),
+                    //position = sqlDt.Rows[i]["position"].ToString(),
+                    //status = sqlDt.Rows[i]["status"].ToString()
+                });
+            }
+            //convert the list of accounts to an array and return!
+            return allMentors.ToArray();
+        }
 
     }
 }
