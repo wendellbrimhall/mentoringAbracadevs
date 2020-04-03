@@ -356,23 +356,7 @@ namespace accountmanager
 
             //loop through each row in the dataset
 
-            List<Account> allAccountInfo = new List<Account>();
-            for (int i = 0; i < sqlDt.Rows.Count; i++)
-            {
-                allAccountInfo.Add(new Account
-                {
-                    userID = Convert.ToInt32(sqlDt.Rows[i]["userID"]),
-                    firstName = sqlDt.Rows[i]["firstName"].ToString(),
-                    lastName = sqlDt.Rows[i]["lastName"].ToString(),
-                    employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
-                    email = sqlDt.Rows[i]["email"].ToString(),
-                    department = sqlDt.Rows[i]["department"].ToString(),
-                    position = sqlDt.Rows[i]["position"].ToString(),
-                    status = sqlDt.Rows[i]["status"].ToString()
-                });
-            }
-            //convert the list of accounts to an array and return!
-            return allAccountInfo.ToArray();
+          
 
             List<Account> allMentors= new List<Account>();
             for (int i = 0; i < sqlDt.Rows.Count; i++)
