@@ -390,7 +390,7 @@ namespace accountmanager
         }
 
         [WebMethod]
-        public string NewEvent(Array inviteList, string name, string date, string location, string type, string description)
+        public string NewEvent(string inviteList, string name, string date, string location, string type, string description)
         {
 
 
@@ -414,6 +414,8 @@ namespace accountmanager
 
                 int eventID = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
+                Invite(inviteList, eventID);
+
                 return str;
                        
             }
@@ -427,8 +429,15 @@ namespace accountmanager
         }
 
         [WebMethod]
-        public void Invite(Array inviteList, int eventID)
+        public void Invite(string inviteList, int eventID)
         {
+
+            for ( int i = 0; i < inviteList.Length; i++)
+            {
+
+
+
+            }
 
         }
 
