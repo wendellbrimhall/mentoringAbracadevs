@@ -12,13 +12,15 @@
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
     <title>Home</title>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
 
         //logs on user using email and pasword
         function LogOnHandler(email, password) {
             console.log("Function started");
             var webMethod = "AccountServices.asmx/LogOn";
+            //var email = $('#email_input').val();
+           // var password = $('#password_input').val();
 
             var parameters = "{\"email\":\"" + encodeURI(email) + "\",\"password\":\"" + encodeURI(password) + "\"}";
 
@@ -120,13 +122,13 @@
                     <div>
                         <div class="form-group">
                             <label for="email-register" class="text-muted mb-1"><strong>Email</strong></label>
-                            <input name="email" id="email-register" class="form-control" type="text"
+                            <input name="email" id="email_input" class="form-control" type="text"
                                    placeholder="you@example.com" autocomplete="off" required />
                         </div>
 
                         <div class="form-group">
                             <label for="password-register" class="text-muted mb-1"><strong>Password</strong></label>
-                            <input name="password" id="password-register" class="form-control" type="password"
+                            <input name="password" id="password_input" class="form-control" type="password"
                                    placeholder="enter password" required />
                         </div>
                         <button class="py-3 mt-4 btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
@@ -148,9 +150,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
             integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
             crossorigin="anonymous"></script>
-    <script>$('[data-toggle="tooltip"]').tooltip()</script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+    
+   
+    
 
 </body>
 

@@ -18,11 +18,19 @@
             
         }
 
+        function clearForm() {
+
+            var formElements = document.getElementById("event_data");
+            for (var i = 0; i < formElements.length; i++)
+                formElements[i].value = "";
+            $("#addAttendeeList").empty();
+            modal.style.display = "none";
+
+        }
 
         function createNewEvent() {
             var checkboxStr="";
             modal.style.display = "block";
-
             console.log(firstNameList);
             console.log(lastNameList);
             console.log(emailList);
@@ -35,19 +43,102 @@
          }//end createNewEvent
  
         function submitEvent() {
-            var inviteList = [];
-
-
+            var inviteList = [];           
+            var eventName = $('#eventName').val();
+            var eventDate = $('#eventDate').val();
+            var eventLocation = $('#eventLocation').val();
+            var eventType = $('#eventType').val();
+            var eventDescription = $('#eventDescription').val();
+            var inviteStr;
+            
 
             $.each($("input[name='invite']:checked"), function () {
                 inviteList.push($(this).val());
             });
-            console.log(inviteList);
 
+            inviteStr = inviteList.toString();
+            console.log(inviteStr);
 
+            var webMethod = "AccountServices.asmx/NewEvent";
+            console.log("SubmitEvent() started");                                 
+            var parameters = "{name: '" + $('#eventName').val() + "' ,  date: '" + $('#eventDate').val() + "' ,  location: '" + $('#eventLocation').val() + "',  type: '" + $('#eventType').val() + "',  description: '" + $('#eventDescription').val() +"'}";
+
+                    
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var responseFromServer = msg.d;                  
+                    console.log(responseFromServer);
+                    emailAttendees(inviteStr, eventName, eventDate, eventLocation, eventType, eventDescription);
+                    recordInvite(responseFromServer, inviteStr);
+                    alert("Event Created!");
+                    clearForm();
+
+                },
+                error: function (e) {
+                    var responseFromServer = e.d;
+                    alert(responseFromServer);
+                   
+                }
+            });//end ajax post
 
         }
- 
+
+
+        function emailAttendees(inviteList, eventName, eventDate, eventLocation, eventType, eventDescription) {
+            var webMethod = "AccountServices.asmx/Invite";
+            var parameters = "{recipients: '" + inviteList + "',  eventName: '" + eventName + "' ,  eventDate: '" + eventDate + "',  eventLocation: '" + eventLocation + "',  eventType: '" + eventType + "', eventDescription: '" + eventDescription +"' }";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var responseFromServer = msg.d;
+                    console.log(responseFromServer);
+                                
+                },
+                error: function (e) {
+                    var responseFromServer = e.d;
+                    alert(responseFromServer);
+
+                }
+            });//end ajax post
+            
+        }
+
+        function recordInvite(eventID, emailList) {
+            var webMethod = "AccountServices.asmx/RecordInvite";
+            console.log("SubmitEvent() started");
+            var parameters = "{eventID: '" + eventID + "', emailList: '" + emailList +"'}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var responseFromServer = msg.d;
+                    console.log(responseFromServer);
+
+                },
+                error: function (e) {
+                    var responseFromServer = e.d;
+                    alert(responseFromServer);
+                }
+            });//end ajax post
+
+        }
         
  
         function search() {
@@ -346,7 +437,7 @@
             <span id="xbutton" class="close">&times;</span>
             <h3>Create New Event</h3>
             <br />
-            <form>
+            <form id="event_data">
                 <span>
                     <Label>Event Name</Label>
                     <input name="eventName" id="eventName" type="text"
@@ -361,13 +452,13 @@
                 <br />
                 <span>
                     <Label>location</Label>
-                    <input name="location" id="location" type="text"
+                    <input name="location" id="eventLocation" type="text"
                            placeholder="Enter Location" autocomplete="off" required />
                 </span>
                 <br />
                 <span>
                     <label for="type-register">Type</label>
-                    <select id="type">
+                    <select id="eventType">
                         <option value="Meal">Meal</option>
                         <option value="Sporting">Sporting</option>
                         <option value="Outdoors">Outdoors</option>
@@ -378,7 +469,7 @@
 
                 <span>
                     <Label>Description</Label>
-                    <textarea name="textarea" style="width:250px;height:50px;" id="description"></textarea>
+                    <textarea name="textarea" style="width:250px;height:50px;" id="eventDescription"></textarea>
                 </span>
                 <br />
                 <Label>Invite:</Label>
@@ -386,13 +477,14 @@
 
                 </div>
 
-                <button onclick="submitEvent()">Create</button>
-                <button onclick="cancelEvent()">Cancel</button>
 
             </form>
-            
 
-            
+            <input type="button" onclick="submitEvent()" value="Create">
+            <input type="button" onclick="clearForm()" value="Cancel">
+
+
+
         </div>
 
     </div>
@@ -401,6 +493,7 @@
 
         cls.onclick = function () {
             modal.style.display = "none";
+            clearForm()
         }
 
         

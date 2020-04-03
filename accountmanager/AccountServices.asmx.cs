@@ -12,6 +12,7 @@ using System.Data;
 using System.Net;
 using System.Net.Mail;
 
+
 namespace accountmanager
 {
 	/// <summary>
@@ -317,7 +318,7 @@ namespace accountmanager
                 var enableSSL = true;
                 var fromAddress = "cis440parking@gmail.com";
                 var password = "!!Abracadevs";
-                var replyToAddr = "wendell334@gmail.com";
+                //var replyToAddr = "wendell334@gmail.com";
 
                 mail.From = new MailAddress(fromAddress);
                 mail.To.Add(toAddress);
@@ -418,33 +419,25 @@ namespace accountmanager
 
 
         [WebMethod]
-        public string NewEvent(string inviteList, string name, string date, string location, string type, string description)
+        public string NewEvent(string name, string date, string location, string type, string description)
         {
 
-
-
-            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-            
-
-
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;           
             string sqlSelect = "INSERT INTO `abracadevs`.`Events_mentoring` (`eventName`, `date`, `location`, `type`, `description`) VALUES ('"+ name +"', '"+ date +"', '"+ location +"', '"+ type +"', '"+ description +"'); SELECT LAST_INSERT_ID();";
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
 
-
             sqlConnection.Open();
             try
             {
-                sqlCommand.ExecuteNonQuery();
-                var str = "Success";
-
+                             
                 int eventID = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                var stringEvent = eventID.ToString();
+               
 
-                Invite(inviteList, eventID);
-
-                return str;
+                return stringEvent;
                        
             }
             catch (Exception e)
@@ -457,19 +450,55 @@ namespace accountmanager
         }
 
         [WebMethod]
-        public void Invite(string inviteList, int eventID)
+        public string Invite(string recipients, string eventName, string eventDate, string eventLocation, string eventType, string eventDescription)
         {
 
-            for ( int i = 0; i < inviteList.Length; i++)
-            {
+            var recipient = recipients;
+            var body = "<p><span style='font - size: 18pt;'>Hello,</span></p><p> &nbsp;</p><p> You have been invited to an event. Please see the details below.</p><p>&nbsp;</p><p><strong>Event:</strong>&nbsp; <em>" + eventName +"</em></p><p><strong>Date:</strong> <em>"+ eventDate +"</em></p><p><strong>Location:</strong> <em>"+ eventLocation +"</em></p><p><strong>Description:</strong> <em>"+ eventDescription + "</em></p><p>&nbsp;</p><p>Please login to your account to RSVP for this event. We hope to see you there!</p><p>&nbsp;</p><p><span style='font - size: 18pt;'>-Abracadev Mentoring</span></p>";
+            var subject = "You've been invited to "+ eventName;
 
+            SendEmail(recipient, subject, body);
 
+            return "Invitations Sent";
 
-            }
 
         }
 
+        [WebMethod]
+        public string RecordInvite(string eventID, string emailList)
+        {
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            string sqlSelect = "";
+            string[] split = emailList.Split(',');
 
+            for (int i = 0; i < split.Length; i++)
+            {
+                sqlSelect = sqlSelect + "INSERT INTO `abracadevs`.`Reservations_mentoring` (`eventID`, `email`) VALUES('" + eventID + "', '" + split[i] + "');";
+            }
+  
+           
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlConnection.Open();
+            try
+            {
+
+                sqlCommand.ExecuteNonQuery();
+
+                return "Invitations recorded";
+
+            }
+            catch (Exception e)
+            {
+                var str = e.ToString();
+                return str;
+            }
+            sqlConnection.Close();
+
+
+
+        }
 
     
 
