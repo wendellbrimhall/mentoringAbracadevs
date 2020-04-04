@@ -437,8 +437,8 @@ namespace accountmanager
             {
                 sqlSelect = sqlSelect + "INSERT INTO `abracadevs`.`Reservations_mentoring` (`eventID`, `email`) VALUES('" + eventID + "', '" + split[i] + "');";
             }
-  
-           
+
+
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
@@ -457,6 +457,8 @@ namespace accountmanager
                 return str;
             }
             sqlConnection.Close();
+
+        }
 
 
         [WebMethod]
@@ -495,4 +497,4 @@ namespace accountmanager
 
 
     }
-}
+

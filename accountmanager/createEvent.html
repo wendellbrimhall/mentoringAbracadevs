@@ -5,52 +5,52 @@
     <title></title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
-        //var modal = document.getElementById("myModal");
-        var modal; 
-        
+        var modal;
+
         var firstNameList = [];
         var lastNameList = [];
         var emailList = [];
 
-        function initialize(){
+        function initialize() {
             modal = document.getElementById("myModal");
-             
-            
         }
 
         function clearForm() {
-
             var formElements = document.getElementById("event_data");
-            for (var i = 0; i < formElements.length; i++)
-                formElements[i].value = "";
+            for (var i = 0; i < formElements.length; i++) formElements[i].value = "";
             $("#addAttendeeList").empty();
             modal.style.display = "none";
-
         }
 
         function createNewEvent() {
-            var checkboxStr="";
+            var checkboxStr = "";
             modal.style.display = "block";
             console.log(firstNameList);
             console.log(lastNameList);
             console.log(emailList);
 
             for (var i = 0; i < emailList.length; i++) {
-                checkboxStr += "<input type='checkbox' name='invite'  value='" + emailList[i] + "'><label>" + firstNameList[i] +" "+ lastNameList[i] +"</label > <br>"
-            }//end for
+                checkboxStr +=
+                    "<input type='checkbox' name='invite'  value='" +
+                    emailList[i] +
+                    "'><label>" +
+                    firstNameList[i] +
+                    " " +
+                    lastNameList[i] +
+                    "</label > <br>";
+            } //end for
 
             $("#addAttendeeList").append(checkboxStr);
-         }//end createNewEvent
- 
+        } //end createNewEvent
+
         function submitEvent() {
-            var inviteList = [];           
-            var eventName = $('#eventName').val();
-            var eventDate = $('#eventDate').val();
-            var eventLocation = $('#eventLocation').val();
-            var eventType = $('#eventType').val();
-            var eventDescription = $('#eventDescription').val();
+            var inviteList = [];
+            var eventName = $("#eventName").val();
+            var eventDate = $("#eventDate").val();
+            var eventLocation = $("#eventLocation").val();
+            var eventType = $("#eventType").val();
+            var eventDescription = $("#eventDescription").val();
             var inviteStr;
-            
 
             $.each($("input[name='invite']:checked"), function () {
                 inviteList.push($(this).val());
@@ -60,39 +60,19 @@
             console.log(inviteStr);
 
             var webMethod = "AccountServices.asmx/NewEvent";
-            console.log("SubmitEvent() started");                                 
-            var parameters = "{name: '" + $('#eventName').val() + "' ,  date: '" + $('#eventDate').val() + "' ,  location: '" + $('#eventLocation').val() + "',  type: '" + $('#eventType').val() + "',  description: '" + $('#eventDescription').val() +"'}";
-
-                    
-            //jQuery ajax method
-            $.ajax({
-                type: "POST",
-                url: webMethod,
-                data: parameters,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (msg) {
-                    var responseFromServer = msg.d;                  
-                    console.log(responseFromServer);
-                    emailAttendees(inviteStr, eventName, eventDate, eventLocation, eventType, eventDescription);
-                    recordInvite(responseFromServer, inviteStr);
-                    alert("Event Created!");
-                    clearForm();
-
-                },
-                error: function (e) {
-                    var responseFromServer = e.d;
-                    alert(responseFromServer);
-                   
-                }
-            });//end ajax post
-
-        }
-
-
-        function emailAttendees(inviteList, eventName, eventDate, eventLocation, eventType, eventDescription) {
-            var webMethod = "AccountServices.asmx/Invite";
-            var parameters = "{recipients: '" + inviteList + "',  eventName: '" + eventName + "' ,  eventDate: '" + eventDate + "',  eventLocation: '" + eventLocation + "',  eventType: '" + eventType + "', eventDescription: '" + eventDescription +"' }";
+            console.log("SubmitEvent() started");
+            var parameters =
+                "{name: '" +
+                $("#eventName").val() +
+                "' ,  date: '" +
+                $("#eventDate").val() +
+                "' ,  location: '" +
+                $("#eventLocation").val() +
+                "',  type: '" +
+                $("#eventType").val() +
+                "',  description: '" +
+                $("#eventDescription").val() +
+                "'}";
 
             //jQuery ajax method
             $.ajax({
@@ -104,21 +84,72 @@
                 success: function (msg) {
                     var responseFromServer = msg.d;
                     console.log(responseFromServer);
-                                
+                    emailAttendees(
+                        inviteStr,
+                        eventName,
+                        eventDate,
+                        eventLocation,
+                        eventType,
+                        eventDescription
+                    );
+                    recordInvite(responseFromServer, inviteStr);
+                    alert("Event Created!");
+                    clearForm();
                 },
                 error: function (e) {
                     var responseFromServer = e.d;
                     alert(responseFromServer);
+                },
+            }); //end ajax post
+        }
 
-                }
-            });//end ajax post
-            
+        function emailAttendees(
+            inviteList,
+            eventName,
+            eventDate,
+            eventLocation,
+            eventType,
+            eventDescription
+        ) {
+            var webMethod = "AccountServices.asmx/Invite";
+            var parameters =
+                "{recipients: '" +
+                inviteList +
+                "',  eventName: '" +
+                eventName +
+                "' ,  eventDate: '" +
+                eventDate +
+                "',  eventLocation: '" +
+                eventLocation +
+                "',  eventType: '" +
+                eventType +
+                "', eventDescription: '" +
+                eventDescription +
+                "' }";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var responseFromServer = msg.d;
+                    console.log(responseFromServer);
+                },
+                error: function (e) {
+                    var responseFromServer = e.d;
+                    alert(responseFromServer);
+                },
+            }); //end ajax post
         }
 
         function recordInvite(eventID, emailList) {
             var webMethod = "AccountServices.asmx/RecordInvite";
             console.log("SubmitEvent() started");
-            var parameters = "{eventID: '" + eventID + "', emailList: '" + emailList +"'}";
+            var parameters =
+                "{eventID: '" + eventID + "', emailList: '" + emailList + "'}";
 
             //jQuery ajax method
             $.ajax({
@@ -130,25 +161,20 @@
                 success: function (msg) {
                     var responseFromServer = msg.d;
                     console.log(responseFromServer);
-
                 },
                 error: function (e) {
                     var responseFromServer = e.d;
                     alert(responseFromServer);
-                }
-            });//end ajax post
-
+                },
+            }); //end ajax post
         }
-        
- 
+
         function search() {
-            
             var selection = [];
             var questionNumber = ["q1", "q2", "q3", "q4", "q5"];
             var searchColumn = [];
             var searchString = [];
             var sqlQuery;
-
 
             var question1 = $("#q1").val();
             var question2 = $("#q2").val();
@@ -171,56 +197,99 @@
             for (var i = 0; i < selection.length; i++) {
                 if (selection[i] != "-") {
                     searchColumn.push(questionNumber[i]);
-                    searchString.push(selection[i])
+                    searchString.push(selection[i]);
                 }
-
-            }//end for
+            } //end for
 
             console.log(searchColumn.length);
             console.log(searchString);
 
             if (searchColumn.length == 5) {
                 sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";
-                sqlQuery = sqlQuery + " AND " + searchColumn[1] + " like '%" + searchString[1] + "%'";
-                sqlQuery = sqlQuery + " AND " + searchColumn[2] + " like '%" + searchString[2] + "%'";
-                sqlQuery = sqlQuery + "AND " + searchColumn[3] + " like '%" + searchString[3] + "%'";
-                sqlQuery = sqlQuery + " And " + searchColumn[4] + " like '%" + searchString[4] + "%'";
+                sqlQuery =
+                    sqlQuery +
+                    " AND " +
+                    searchColumn[1] +
+                    " like '%" +
+                    searchString[1] +
+                    "%'";
+                sqlQuery =
+                    sqlQuery +
+                    " AND " +
+                    searchColumn[2] +
+                    " like '%" +
+                    searchString[2] +
+                    "%'";
+                sqlQuery =
+                    sqlQuery + "AND " + searchColumn[3] + " like '%" + searchString[3] + "%'";
+                sqlQuery =
+                    sqlQuery +
+                    " And " +
+                    searchColumn[4] +
+                    " like '%" +
+                    searchString[4] +
+                    "%'";
                 callDb(sqlQuery);
             } else if (searchColumn.length == 4) {
                 sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";
-                sqlQuery = sqlQuery + " AND " + searchColumn[1] + " like '%" + searchString[1] + "%'";
-                sqlQuery = sqlQuery + " AND " + searchColumn[2] + " like '%" + searchString[2] + "%'";
-                sqlQuery = sqlQuery + "AND " + searchColumn[3] + " like '%" + searchString[3] + "%'";
+                sqlQuery =
+                    sqlQuery +
+                    " AND " +
+                    searchColumn[1] +
+                    " like '%" +
+                    searchString[1] +
+                    "%'";
+                sqlQuery =
+                    sqlQuery +
+                    " AND " +
+                    searchColumn[2] +
+                    " like '%" +
+                    searchString[2] +
+                    "%'";
+                sqlQuery =
+                    sqlQuery + "AND " + searchColumn[3] + " like '%" + searchString[3] + "%'";
                 callDb(sqlQuery);
             } else if (searchColumn.length == 3) {
                 sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";
-                sqlQuery = sqlQuery + " AND " + searchColumn[1] + " like '%" + searchString[1] + "%'";
-                sqlQuery = sqlQuery + " AND " + searchColumn[2] + " like '%" + searchString[2] + "%'";
+                sqlQuery =
+                    sqlQuery +
+                    " AND " +
+                    searchColumn[1] +
+                    " like '%" +
+                    searchString[1] +
+                    "%'";
+                sqlQuery =
+                    sqlQuery +
+                    " AND " +
+                    searchColumn[2] +
+                    " like '%" +
+                    searchString[2] +
+                    "%'";
                 callDb(sqlQuery);
             } else if (searchColumn.length == 2) {
                 sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";
-                sqlQuery = sqlQuery + " AND " + searchColumn[1] + " like '%" + searchString[1] + "%'";
+                sqlQuery =
+                    sqlQuery +
+                    " AND " +
+                    searchColumn[1] +
+                    " like '%" +
+                    searchString[1] +
+                    "%'";
                 callDb(sqlQuery);
             } else if (searchColumn.length == 1) {
-                sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";     
+                sqlQuery = "Where " + searchColumn[0] + " Like '%" + searchString[0] + "%'";
                 callDb(sqlQuery);
             } else if (searchColumn.length == 0) {
                 alert("Please select at least one question.");
-                
-            } 
-       
+            }
 
-                console.log(sqlQuery);
-
-
-
-        }//end search()
+            console.log(sqlQuery);
+        } //end search()
 
         function callDb(sql) {
             var webMethod = "AccountServices.asmx/SearchSurveys";
-            var parameters = "{ \"s\":\"" + sql + "\" }";
+            var parameters = '{ "s":"' + sql + '" }';
             console.log(parameters);
-
 
             $.ajax({
                 type: "POST",
@@ -235,17 +304,19 @@
                     var tableRowNumber = 1;
                     var recordId = [];
                     console.log(infoArray);
-                    clearResultsTable(document.getElementById('infoTableId'));
+                    clearResultsTable(document.getElementById("infoTableId"));
                     if (infoArray.length > 0) {
-                        var eventButton = document.getElementById('createEventButton');
-                        eventButton.innerHTML = "<br /><button id='create' onclick='createNewEvent()'>Create Event</button>";
+                        var eventButton = document.getElementById("createEventButton");
+                        eventButton.innerHTML =
+                            "<br /><button id='create' onclick='createNewEvent()'>Create Event</button>";
                     }
 
                     for (var i = 0; i < infoArray.length; i++) {
                         if (recordId.includes(infoArray[i]["userID"])) {
-
                         } else {
-                            var row = document.getElementById("infoTableId").insertRow(tableRowNumber);
+                            var row = document
+                                .getElementById("infoTableId")
+                                .insertRow(tableRowNumber);
                             var cell0 = row.insertCell(0);
                             var cell1 = row.insertCell(1);
                             var cell2 = row.insertCell(2);
@@ -270,27 +341,24 @@
 
                             tableRowNumber += 1;
                             recordId.push(infoArray[i]["userID"]);
-                        }//end else
+                        } //end else
                     }
-                    
                 },
 
                 error: function (msg) {
                     var message = msg.d;
                     alert(message);
-                }
+                },
             });
-            
         }
-        
-    function clearResultsTable(table) {
-    //function to clear the results
-	    for (var i = table.rows.length; i > 1; i--) {
-		table.deleteRow(i-1);
-	    }
-    }
 
-       
+        function clearResultsTable(table) {
+            //function to clear the results
+            for (var i = table.rows.length; i > 1; i--) {
+                table.deleteRow(i - 1);
+            }
+        }
+
     </script>
 
 
@@ -309,7 +377,7 @@
             </select>
         </div>
         <br />
-        <br />
+       
         <div>
             <label for="q2">Do you like to drink?</label>
             <br />
@@ -320,7 +388,7 @@
             </select>
         </div>
         <br />
-        <br />
+       
 
         <div>
             <label for="q3">What are your favorite type of foods?</label>
@@ -336,7 +404,7 @@
             </select>
         </div>
         <br />
-        <br />
+     
         <div>
             <label for="q4">What are your favorite sports?</label>
             <br />
@@ -349,7 +417,7 @@
             </select>
         </div>
         <br />
-        <br />
+      
         <div>
             <label for="q5">What type of outdoor activities do you enjoy?</label>
             <br />
@@ -363,7 +431,7 @@
             </select>
         </div>
         <br />
-        <br />
+      
         <div>
             <button id="search" onclick="search()">Submit</button>
         </div>
