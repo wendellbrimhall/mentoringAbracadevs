@@ -464,11 +464,25 @@ namespace accountmanager
 
 
         [WebMethod]
-        public string UpdateMentor(int userID, int mentorID)
+        public string UpdateMentor(string userID, string mentorID)
         {
+            string sqlSelect = "";
+            
+           string[] userIDList = userID.Split(',');
+           string[] mentorIDList = mentorID.Split(',');
+
+            for ( int i = 0; i < userIDList.Length; i++)
+            {
+                sqlSelect = sqlSelect + "UPDATE `abracadevs`.`Users_mentoring` SET `mentorID` = '" + mentorIDList[i] + "' WHERE (`userID` = '" + userIDList[i] + "');";
+
+                                       
+
+            }
+
+
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 
-            string sqlSelect = "UPDATE Users_mentoring set mentorID = " + mentorID + " WHERE userID = " + userID + ";";
+           
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);

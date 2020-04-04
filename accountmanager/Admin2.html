@@ -125,6 +125,35 @@
             console.log(UserIDStr);
             console.log(mentorIDStr);
 
+
+
+            //this function allows admin to select a mentor for a mentee
+            var webMethod = "AccountServices.asmx/UpdateMentor";
+            var parameters = {
+                mentorID: mentorIDStr,
+                userID: UserIDStr
+            };
+
+            var json_data = JSON.stringify(parameters)
+
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: json_data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var responseFromServer = msg.d;
+
+                    if (responseFromServer == "Success!") {
+                        alert("Updated");
+                    }
+                    else {
+                        alert("Update Failed");
+                    }
+                }
+            });
      
         }
          
