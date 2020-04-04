@@ -32,7 +32,7 @@
                     var tableRowNumber = 1;
                     var mentorList = "<option>&nbsp</option>";
                     var mentorStr = "";
-                    
+                    var mentorIDList = "";
 
                     console.log(infoArray);
 
@@ -42,6 +42,8 @@
                     for (var i = 0; i < infoArray.length; i++) {
                         if (infoArray[i]["status"] == "Mentor") {
                             mentorList += "<option>" + infoArray[i]["firstName"] + " " + infoArray[i]["lastName"] + "</option>";
+                            mentorIDList += infoArray[i]["mentorID"] + " ";
+                            console.log(mentorIDList);
                         }
                     }
 
@@ -62,6 +64,8 @@
                         var cell7 = row.insertCell(7);
                         var cell8 = row.insertCell(8);
 
+                        cell0.id = "userID_id";
+
                         cell0.innerHTML = infoArray[i]["userID"];
                         cell1.innerHTML = infoArray[i]["firstName"];
                         cell2.innerHTML = infoArray[i]["lastName"];
@@ -78,6 +82,37 @@
                             cell8.innerHTML = mentorStr;
                         }
                         tableRowNumber += 1;
+                    }
+                }
+            });
+        }
+
+       function EditMentor() {
+
+            //this function allows admin to select a mentor for a mentee
+            var webMethod = "AccountServices.asmx/UpdateMentor";
+            var parameters = {
+                mentorID: $("#mentorsId").val(), // this is not the mentorID
+                userID: $("#userID_id").val()
+            };
+
+            var json_data = JSON.stringify(parameters)
+
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: json_data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var responseFromServer = msg.d;
+
+                    if (responseFromServer == "Success!") {
+                        alert("Updated");
+                    }
+                    else {
+                        alert("Update Failed");
                     }
                 }
             });
@@ -126,7 +161,7 @@
             </tr>
         </table>
 
-        <button type="submit" id="submitButtonId">Submit</button>
+        <button type="submit" id="submitButtonId" onclick="EditMentor()">Submit</button>
     </div>
 
 </body>
