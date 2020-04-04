@@ -97,6 +97,7 @@
     <Content Include="admin.html" />
     <Content Include="home.html" />
     <Content Include="createEvent.html" />
+    <Content Include="Admin2.html" />
     <Content Include="index.css" />
     <Content Include="logOn.html" />
     <Content Include="questionnaireA.html" />

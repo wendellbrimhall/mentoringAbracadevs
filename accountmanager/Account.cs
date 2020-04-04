@@ -20,6 +20,7 @@ namespace accountmanager
         public string position;
         public int surveyComplete;
         public string status;
+        public int mentorID;
 
     }
 }

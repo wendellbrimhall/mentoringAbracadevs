@@ -231,7 +231,8 @@ namespace accountmanager
                     email = sqlDt.Rows[i]["email"].ToString(),
                     department = sqlDt.Rows[i]["department"].ToString(),
                     position = sqlDt.Rows[i]["position"].ToString(),
-                    status = sqlDt.Rows[i]["status"].ToString()
+                    status = sqlDt.Rows[i]["status"].ToString(),
+                    mentorID = Convert.ToInt32(sqlDt.Rows[i]["MentorID"])
                 });
             }
             //convert the list of accounts to an array and return!
@@ -423,7 +424,6 @@ namespace accountmanager
 
             return "Invitations Sent";
 
-
         }
 
         [WebMethod]
@@ -492,9 +492,7 @@ namespace accountmanager
 
 
 
-        }
-
-
-
     }
+
+}
 
