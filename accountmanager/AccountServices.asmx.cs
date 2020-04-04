@@ -232,7 +232,9 @@ namespace accountmanager
                     department = sqlDt.Rows[i]["department"].ToString(),
                     position = sqlDt.Rows[i]["position"].ToString(),
                     status = sqlDt.Rows[i]["status"].ToString(),
+
                     mentorID = Convert.ToInt32(sqlDt.Rows[i]["MentorID"])
+
                 });
             }
             //convert the list of accounts to an array and return!
@@ -462,11 +464,11 @@ namespace accountmanager
 
 
         [WebMethod]
-        public string UpdateMentor(string firstName, string lastName, int mentorID)
+        public string UpdateMentor(int userID, int mentorID)
         {
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
 
-            string sqlSelect = "UPDATE Users_mentoring set mentorID = " + mentorID + " WHERE firstName = '" + firstName + "' AND lastName = '" + lastName + "';";
+            string sqlSelect = "UPDATE Users_mentoring set mentorID = " + mentorID + " WHERE userID = " + userID + ";";
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -477,7 +479,7 @@ namespace accountmanager
             {
                 sqlCommand.ExecuteNonQuery();
 
-                Session["mentorID"] = mentorID;
+               // Session["mentorID"] = mentorID;
              
                 return "Success!";
             }
@@ -487,12 +489,10 @@ namespace accountmanager
                 return str;
             }
             sqlConnection.Close();
-
         }
 
-
-
     }
+ }
 
-}
+
 
