@@ -75,6 +75,7 @@ namespace accountmanager
                 Session["status"] = sqlDt.Rows[0]["status"];
                 Session["admin"] = sqlDt.Rows[0]["admin"];
                 Session["surveyComplete"] = sqlDt.Rows[0]["surveyComplete"];
+                Session["mentorID"] = sqlDt.Rows[0]["mentorID"];
 
                 //flip our flag to true so we return a value that lets them know they're logged in
                 success = true;
@@ -342,50 +343,6 @@ namespace accountmanager
         }
 
         [WebMethod(EnableSession = true)]
-        public Account[] GetMentors()
-        {
-            DataTable sqlDt = new DataTable("mentors");
-
-            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-
-            // if the user is an admin, all users' account info will be displayed 
-            //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
-            string sqlSelect = "SELECT userID, firstName, lastName FROM Users_mentoring WHERE status='mentor';";
-
-
-            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-            //gonna use this to fill a data table
-            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-            sqlDa.Fill(sqlDt);
-
-            //loop through each row in the dataset
-
-          
-
-            List<Account> allMentors= new List<Account>();
-            for (int i = 0; i < sqlDt.Rows.Count; i++)
-            {
-                allMentors.Add(new Account
-                {
-                    userID = Convert.ToInt32(sqlDt.Rows[i]["userID"]),
-                    firstName = sqlDt.Rows[i]["firstName"].ToString(),
-                    lastName = sqlDt.Rows[i]["lastName"].ToString()
-                    //employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
-                    //email = sqlDt.Rows[i]["email"].ToString(),
-                    //department = sqlDt.Rows[i]["department"].ToString(),
-                    //position = sqlDt.Rows[i]["position"].ToString(),
-                    //status = sqlDt.Rows[i]["status"].ToString()
-                });
-            }
-            //convert the list of accounts to an array and return!
-            return allMentors.ToArray();
-
-        }
-
-
-        [WebMethod(EnableSession = true)]
         public Account[] SearchSurveys(string s)
         {
             DataTable sqlDt = new DataTable("users");
@@ -502,10 +459,39 @@ namespace accountmanager
             sqlConnection.Close();
 
 
+        [WebMethod]
+        public string UpdateMentor(string firstName, string lastName, int mentorID)
+        {
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            string sqlSelect = "UPDATE Users_mentoring set mentorID = " + mentorID + " WHERE firstName = '" + firstName + "' AND lastName = '" + lastName + "';";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlConnection.Open();
+
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+
+                Session["mentorID"] = mentorID;
+             
+                return "Success!";
+            }
+            catch (Exception e)
+            {
+                var str = e.ToString();
+                return str;
+            }
+            sqlConnection.Close();
 
         }
 
-    
+
+
+        }
+
 
 
     }
