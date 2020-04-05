@@ -474,15 +474,9 @@ namespace accountmanager
             for ( int i = 0; i < userIDList.Length; i++)
             {
                 sqlSelect = sqlSelect + "UPDATE `abracadevs`.`Users_mentoring` SET `mentorID` = '" + mentorIDList[i] + "' WHERE (`userID` = '" + userIDList[i] + "');";
-
-                                       
-
             }
 
-
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-
-           
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
@@ -492,9 +486,7 @@ namespace accountmanager
             try
             {
                 sqlCommand.ExecuteNonQuery();
-
                // Session["mentorID"] = mentorID;
-             
                 return "Success!";
             }
             catch (Exception e)
@@ -504,7 +496,6 @@ namespace accountmanager
             }
             sqlConnection.Close();
         }
-
     }
  }
 

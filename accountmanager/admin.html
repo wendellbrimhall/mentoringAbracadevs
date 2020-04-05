@@ -12,7 +12,7 @@
 
         // this function display all account info
         function loadAccounts() {
-            
+
             var webMethod = "AccountServices.asmx/GetAllAccountInfo";
             var parameters = "{}";
 
@@ -30,29 +30,26 @@
                     var infoArray = array.d;
 
                     var tableRowNumber = 1;
-                    var mentorList = "<option>&nbsp</option>";
+                    var mentorList = "<option value='0'>&nbsp</option>";
                     var mentorStr = "";
-                    var mentorIDList = "";
+
 
                     console.log(infoArray);
 
-                    //This for loop will go through the array. 
-                    //Any one listed as a Mentor will have their first name and last name 
+                    //This for loop will go through the array.
+                    //Any one listed as a Mentor will have their first name and last name
                     //added to a string between < option ></option > elements
                     for (var i = 0; i < infoArray.length; i++) {
                         if (infoArray[i]["status"] == "Mentor") {
-                            mentorList += "<option>" + infoArray[i]["firstName"] + " " + infoArray[i]["lastName"] + "</option>";
-                            mentorIDList += infoArray[i]["mentorID"] + " ";
-                            console.log(mentorIDList);
+                            mentorList += "<option value='"+ infoArray[i]['userID'] +"'>" + infoArray[i]["firstName"] + " " + infoArray[i]["lastName"] + "</option>";
                         }
                     }
 
                     //Add <select></select> around our string of mentors
-                    mentorStr += "<select id='mentorsId'>" + mentorList + "</select>";
+                    mentorStr += "<select>" + mentorList + "</select>";
                     console.log(mentorStr);
 
                     for (var i = 0; i < infoArray.length; i++) {
-
                         var row = document.getElementById("infoTableId").insertRow(tableRowNumber);
                         var cell0 = row.insertCell(0);
                         var cell1 = row.insertCell(1);
@@ -64,8 +61,6 @@
                         var cell7 = row.insertCell(7);
                         var cell8 = row.insertCell(8);
 
-                        cell0.id = "userID_id";
-
                         cell0.innerHTML = infoArray[i]["userID"];
                         cell1.innerHTML = infoArray[i]["firstName"];
                         cell2.innerHTML = infoArray[i]["lastName"];
@@ -74,30 +69,63 @@
                         cell5.innerHTML = infoArray[i]["department"];
                         cell6.innerHTML = infoArray[i]["position"];
                         cell7.innerHTML = infoArray[i]["status"];
-
+                        
                         //If someone is listed as a mentor they will not get a drop down menu. If they are not listed as mentor then a drop down menu with all mentors is added in Cell 8
                         if (infoArray[i]["status"] == "Mentor") {
-                            cell8.innerHTML = "-";                           
+                            cell8.innerHTML = "-";
                         } else {
                             cell8.innerHTML = mentorStr;
+                            $("#infoTableId tr:eq(" + tableRowNumber + ") td:eq(8) select").val(infoArray[i]["mentorID"]);
                         }
-                        tableRowNumber += 1;
+                        
+                        console.log(infoArray[i]["mentorID"]);
+                        tableRowNumber += 1;       
                     }
                 }
             });
         }
 
-       function EditMentor() {
+        function submitButton(){
+            var userIDList = [];
+            var mentorIDList = [];
+
+            $('#infoTableId tbody tr').each(function () {
+                if (tdObject = $(this).find('td:eq(8)').text() == "-") {
+
+                } else {
+                    var tdObject = $(this).find('td:eq(8)'); //locate the <td> holding select;
+                    var selectObject = tdObject.find("select"); //grab the <select> tag assuming that there will be only single select box within that <td> 
+                    var selCntry = selectObject.val(); // get the selected country from current <tr>
+
+                    var userIDCell = $(this).find('td:eq(0)');
+                    var uid = userIDCell.text();
+
+                    userIDList.push(uid);
+                    mentorIDList.push(selCntry);
+                }              
+            });
+
+            userIDList.shift();
+            mentorIDList.shift();
+
+            console.log(userIDList);
+            console.log(mentorIDList);
+
+            var UserIDStr = userIDList.toString();
+            var mentorIDStr = mentorIDList.toString();
+
+            console.log(UserIDStr);
+            console.log(mentorIDStr);
+
 
             //this function allows admin to select a mentor for a mentee
             var webMethod = "AccountServices.asmx/UpdateMentor";
             var parameters = {
-                mentorID: $("#mentorsId").val(), // this is not the mentorID
-                userID: $("#userID_id").val()
+                mentorID: mentorIDStr,
+                userID: UserIDStr
             };
 
             var json_data = JSON.stringify(parameters)
-
 
             $.ajax({
                 type: "POST",
@@ -117,8 +145,6 @@
                 }
             });
         }
-
-
     </script>
 
     <style>
@@ -136,10 +162,9 @@
             padding: 10px;
             border: solid 1px black;
             background-color: aquamarine;
-            margin-top: 15px;       
+            margin-top: 15px;
         }
     </style>
-
 </head>
 
 <body onload="loadAccounts()">
@@ -161,7 +186,7 @@
             </tr>
         </table>
 
-        <button type="submit" id="submitButtonId" onclick="EditMentor()">Submit</button>
+        <button id="submitButtonId" onclick="submitButton()">Submit</button>
     </div>
 
 </body>
