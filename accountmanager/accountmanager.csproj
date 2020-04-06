@@ -99,7 +99,6 @@
     <Content Include="admin.html" />
     <Content Include="index.css" />
     <Content Include="logOn.html" />
-    <Content Include="questionnaireA.html" />
     <Content Include="questionnaireB.html" />
     <Content Include="Web.config" />
   </ItemGroup>
