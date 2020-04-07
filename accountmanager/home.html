@@ -15,30 +15,90 @@
     <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
     <link rel="stylesheet" type="text/css" href="table.css">
 
-
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+
+        function loadReports() {
+
+            var webMethod = "AccountServices.asmx/ViewEvents";
+            console.log('Function started');
+            var parameters = "{}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+
+                    console.log(array);
+                    var data = array.d;
+                    console.log(data);
+
+                    var tableBody = $("#ev_table");
+
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+
+
+                        for (var i = 0; i < data.length; i++) {
+                            //This loop goes through each user with pending status and adds their first, last and email to a table
+                            //It will also dynamically add an approve and deny button to each row.
+                            var findRep = data[i].report_id;
+
+                            // variables will store the user_id and email address of each row, and place that data in the button function
+
+                            var tableBody = $("#ev_table");
+
+                            var first = "<div class='row'><div class='cell' data-title='First'>" + data[i].eventID + "</div>";
+                            var second = first + "<div class='cell' data-title='date'> " + data[i].eventName + "</div>";
+                            var third = second + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
+                            var fourth = third + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
+                            var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
+                            var sixth = fifth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
+
+                            console.log(sixth);
+
+                            tableBody.append(sixth);
+                        }
+                    }
+
+                },
+                error: function (e) {
+                    alert("this code will only execute if javascript is unable to access the webservice");
+                }
+            });
+
+        }
+
+    </script>
+
+    <style>
+
+        .bootstrap-iso .formden_header h2,
+        .bootstrap-iso .formden_header p,
+        .bootstrap-iso form {
+            font-family: Arial, Helvetica, sans-serif;
+            color: black
+        }
+
+            .bootstrap-iso form button,
+            .bootstrap-iso form button:hover {
+                color: white !important;
+            }
+
+        .asteriskField {
+            color: red;
+        }
+    </style>
 
 </head>
 
-<style>
-    .bootstrap-iso .formden_header h2,
-    .bootstrap-iso .formden_header p,
-    .bootstrap-iso form {
-        font-family: Arial, Helvetica, sans-serif;
-        color: black
-    }
 
-        .bootstrap-iso form button,
-        .bootstrap-iso form button:hover {
-            color: white !important;
-        }
 
-    .asteriskField {
-        color: red;
-    }
-</style>
-
-<body>
+<body onload="javascript: loadReports();">
     <header class="header-bar mb-3">
         <div class="container d-flex flex-column flex-md-row align-items-center p-3">
             <h4 class="my-0 mr-md-auto font-weight-normal"><a href="/parking.html" class="text-white">AbracaMentoring</a></h4>
@@ -56,10 +116,14 @@
     </header>
 
     <div class="container py-md-5 container--narrow">
+
         <h4>Upcoming Events</h4>
-        <div class="table" id="eventsTable" margin: 0px; margin-bottom: 0rem;>
+        <div class="table" id="ev_table" margin: 0px; margin-bottom: 0rem;>
 
             <div class="row header blue">
+                <div class="cell">
+                    Event ID
+                </div>
                 <div class="cell">
                     Event Name
                 </div>
@@ -121,5 +185,8 @@
         </footer>
 
 
+    </div>
+
 </body>
+
 </html>
