@@ -9,10 +9,15 @@
     <script type="text/javascript">
 
         var tableRowLength;
-        var accounts;
+        var accountsArray;
+
+
+        $(document).ready(function () {
+            accountsArray = loadAccounts();
+        });
 
         // this function display all account info
-        function loadAccounts() {
+         async function loadAccounts() {
 
             var webMethod = "AccountServices.asmx/GetAllAccountInfo";
             var parameters = "{}";
@@ -26,75 +31,68 @@
                 dataType: "json",
                 success: function (array) {
                     console.log("function started");
-                    //console.log(array);
+                    console.log(array);
 
                     var infoArray = array.d;
 
-//                    console.log(infoArray);
+                    var tableRowNumber = 1;
+                    var mentorList = "<option value='0'>&nbsp</option>";
+                    var mentorStr = "";
 
-                    return infoArray;
-                }
+
+                    console.log(infoArray);
+
+                    //This for loop will go through the array.
+                    //Any one listed as a Mentor will have their first name and last name
+                    //added to a string between < option ></option > elements
+                    for (var i = 0; i < infoArray.length; i++) {
+                        if (infoArray[i]["status"] == "Mentor") {
+                            mentorList += "<option value='" + infoArray[i]['userID'] + "'>" + infoArray[i]["firstName"] + " " + infoArray[i]["lastName"] + "</option>";
+                        }
+                    }
+
+                    //Add <select></select> around our string of mentors
+                    mentorStr += "<select>" + mentorList + "</select>";
+                    console.log(mentorStr);
+
+                    for (var i = 0; i < infoArray.length; i++) {
+                        var row = document.getElementById("infoTableId").insertRow(tableRowNumber);
+                        var cell0 = row.insertCell(0);
+                        var cell1 = row.insertCell(1);
+                        var cell2 = row.insertCell(2);
+                        var cell3 = row.insertCell(3);
+                        var cell4 = row.insertCell(4);
+                        var cell5 = row.insertCell(5);
+                        var cell6 = row.insertCell(6);
+                        var cell7 = row.insertCell(7);
+                        var cell8 = row.insertCell(8);
+
+                        cell0.innerHTML = infoArray[i]["userID"];
+                        cell1.innerHTML = infoArray[i]["firstName"];
+                        cell2.innerHTML = infoArray[i]["lastName"];
+                        cell3.innerHTML = infoArray[i]["employeeID"];
+                        cell4.innerHTML = infoArray[i]["email"];
+                        cell5.innerHTML = infoArray[i]["department"];
+                        cell6.innerHTML = infoArray[i]["position"];
+                        cell7.innerHTML = infoArray[i]["status"];
+
+                        //If someone is listed as a mentor they will not get a drop down menu. If they are not listed as mentor then a drop down menu with all mentors is added in Cell 8
+                        if (infoArray[i]["status"] == "Mentor") {
+                            cell8.innerHTML = "-";
+                        } else {
+                            cell8.innerHTML = mentorStr;
+                            $("#infoTableId tr:eq(" + tableRowNumber + ") td:eq(8) select").val(infoArray[i]["mentorID"]);
+                        }
+
+                        console.log(infoArray[i]["mentorID"]);
+                        tableRowNumber += 1;
+                    }
+                    accountsArray = infoArray;
+                }              
             });
         }
 
-        function displayAccounts() {
-            accounts = loadAccounts();
-
-            console.log(accounts);
-
-            var tableRowNumber = 1;
-            var mentorList = "<option value='0'>&nbsp</option>";
-            var mentorStr = "";
-
-            //This for loop will go through the array.
-            //Any one listed as a Mentor will have their first name and last name
-            //added to a string between < option ></option > elements
-            for (var i = 0; i < accounts.length; i++) {
-                if (infoArray[i]["status"] == "Mentor") {
-                    mentorList += "<option value='" + accounts[i]['userID'] + "'>" + accounts[i]["firstName"] + " " + accounts[i]["lastName"] + "</option>";
-                }
-            }
-
-            //Add <select></select> around our string of mentors
-            mentorStr += "<select>" + mentorList + "</select>";
-            console.log(mentorStr);
-
-            for (var i = 0; i < accounts.length; i++) {
-                var row = document.getElementById("infoTableId").insertRow(tableRowNumber);
-                var cell0 = row.insertCell(0);
-                var cell1 = row.insertCell(1);
-                var cell2 = row.insertCell(2);
-                var cell3 = row.insertCell(3);
-                var cell4 = row.insertCell(4);
-                var cell5 = row.insertCell(5);
-                var cell6 = row.insertCell(6);
-                var cell7 = row.insertCell(7);
-                var cell8 = row.insertCell(8);
-
-                cell0.innerHTML = accounts[i]["userID"];
-                cell1.innerHTML = accounts[i]["firstName"];
-                cell2.innerHTML = accounts[i]["lastName"];
-                cell3.innerHTML = accounts[i]["employeeID"];
-                cell4.innerHTML = accounts[i]["email"];
-                cell5.innerHTML = accounts[i]["department"];
-                cell6.innerHTML = accounts[i]["position"];
-                cell7.innerHTML = accounts[i]["status"];
-
-                //If someone is listed as a mentor they will not get a drop down menu. If they are not listed as mentor then a drop down menu with all mentors is added in Cell 8
-                if (accounts[i]["status"] == "Mentor") {
-                    cell8.innerHTML = "-";
-                } else {
-                    cell8.innerHTML = mentorStr;
-                    $("#infoTableId tr:eq(" + tableRowNumber + ") td:eq(8) select").val(accounts[i]["mentorID"]);
-                }
-
-                console.log(accounts[i]["mentorID"]);
-                tableRowNumber += 1;
-            }
-        }
-       
-
-        function submitButton(){
+        function submitButton() {
             var userIDList = [];
             var mentorIDList = [];
 
@@ -103,7 +101,7 @@
 
                 } else {
                     var tdObject = $(this).find('td:eq(8)'); //locate the <td> holding select;
-                    var selectObject = tdObject.find("select"); //grab the <select> tag assuming that there will be only single select box within that <td> 
+                    var selectObject = tdObject.find("select"); //grab the <select> tag assuming that there will be only single select box within that <td>
                     var selCntry = selectObject.val(); // get the selected country from current <tr>
 
                     var userIDCell = $(this).find('td:eq(0)');
@@ -111,8 +109,10 @@
 
                     userIDList.push(uid);
                     mentorIDList.push(selCntry);
-                }              
+                }
             });
+
+            console.log(accountsArray[1]["firstName"]);
 
             userIDList.shift();
             mentorIDList.shift();
@@ -176,28 +176,28 @@
     </style>
 </head>
 
-<body onload="displayAccounts()">
-    
-        <div class="accountInfo">
-            <h1>User Information</h1>
-            <hr />
+<body>
 
-            <table class="InfoTable" id="infoTableId">
-                <tr>
-                    <td>User ID</td>
-                    <td>First Name</td>
-                    <td>Last Name</td>
-                    <td>Employee ID</td>
-                    <td>Email Address</td>
-                    <td>Department</td>
-                    <td>Position</td>
-                    <td>Status</td>
-                    <td>Mentor</td>
-                </tr>
-            </table>
+    <div class="accountInfo">
+        <h1>User Information</h1>
+        <hr />
 
-            <button id="submitButtonId" onclick="submitButton()">Submit</button>
-        </div>
+        <table class="InfoTable" id="infoTableId">
+            <tr>
+                <td>User ID</td>
+                <td>First Name</td>
+                <td>Last Name</td>
+                <td>Employee ID</td>
+                <td>Email Address</td>
+                <td>Department</td>
+                <td>Position</td>
+                <td>Status</td>
+                <td>Mentor</td>
+            </tr>
+        </table>
+
+        <button id="submitButtonId" onclick="submitButton()">Submit</button>
+    </div>
 
 </body>
 </html>
