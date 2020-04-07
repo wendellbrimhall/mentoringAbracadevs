@@ -1,8 +1,22 @@
-﻿<!DOCTYPE html>
-<html>
+﻿<!doctype html>
+<html lang="en">
+
 <head>
-    <meta charset="utf-8" />
-    <title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>AbracaMentoring</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"
+            integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0"
+            crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+
+    <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
+    <link rel="stylesheet" type="text/css" href="table.css">
+
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -41,8 +55,8 @@
                         $('#email').focus();
                         alert("This email address is already in use");
 
-                    }               
-                    
+                    }
+
                     else {
                         alert(responseFromServer)
                         $('#Submit').prop('disabled', function (i, v) { return !v; });
@@ -56,73 +70,120 @@
                     $('#Submit').prop('disabled', function (i, v) { return !v; });
                 }
             });//end ajax post
-    }// end addUserHandler
+        }// end addUserHandler
     </script>
 
-</head >
-            <body>
+</head>
 
+<body>
+    <header class="header-bar mb-3">
+        <div class="container d-flex flex-column flex-md-row align-items-center p-3">
+            <h4 class="my-0 mr-md-auto font-weight-normal">
+                <a href="/home.html" class="text-white">AbracaMentoring</a>
+            </h4>
+            <div class="flex-row my-3 my-md-0">
+                <a class="btn btn-sm btn-success mr-2" href="/account.html">Account</a>
+                <a class="btn btn-sm btn-success mr-2" href="/home.htlm">Home</a>
+                <form action="/logout" method="POST" class="d-inline">
+                    <!--<button class="btn btn-sm btn-secondary">Sign Out</button>-->
+                    <a class="btn btn-sm btn-secondary mr-2" onclick="LogOutHandler()" href="/logOn.html">Sign Out</a>
 
-                <form id="userForm">
-                    <div class="form-group">
-                        <label for="username-register" class="text-muted mb-1"><small>First Name</small></label>
-                        <input name="username" id="firstname-register" class="form-control" type="text"
-                               placeholder="First" autocomplete="off" required />
-                    </div>
-                    <div class="form-group">
-                        <label for="username-register" class="text-muted mb-1"><small>Last Name</small></label>
-                        <input name="username" id="lastname-register" class="form-control" type="text"
-                               placeholder="Last" autocomplete="off" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="empId-register" class="text-muted mb-1"><small>Employee ID</small></label>
-                        <input name="empId" id="empId-register" class="form-control" type="text"
-                               placeholder="Employee ID" autocomplete="off" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email-register" class="text-muted mb-1"><small>Email</small></label>
-                        <input name="email" id="email-register" class="form-control" type="text"
-                               placeholder="employee@example.com" autocomplete="off" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="position-register" class="text-muted mb-1"><small>Postition</small></label>
-                        <input id="pos_register" class="form-control"
-                               placeholder="Position" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="status-register" class="text-muted mb-1"><small>Mentor/Mentee</small></label>
-                        <select id="status" class="form-control">
-                            <option value="Mentor">Mentor</option>
-                            <option value="Mentee">Mentee</option>
-                            
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="department-register" class="text-muted mb-1"><small>Department</small></label>
-                        <select id="dept" class="form-control">
-                            <option value="Sales">Sales</option>
-                            <option value="Manufacturing">Manufacturing</option>
-                            <option value="Administrative">Administrative</option>
-                        </select>
-                    </div>
-
-
-
-                    <div class="form-group">
-                        <label for="password-register" class="text-muted mb-1"><small>Password</small></label>
-                        <input name="password" id="password-register" class="form-control" type="password"
-                               placeholder="Create a password" required />
-                    </div>
-                    <button type="submit" id="Submit" onclick="javascript: AddUserHandler();">
-                        Sign Up
-                    </button>
                 </form>
+            </div>
+        </div>
+    </header>
 
+    <br>
 
+    <div class="container py-md-10 container--narrow">
+        <div class="text-center">
+            <h3><strong>Create User</strong></h3>
+            <!-- <p>View and edit your personal information below</p> -->
+        </div>
+        <hr>
 
-            </body>
-</html >
+        <!--<span>Login Email: </span><label for="email-label">sql req</label>-->
+        <!--<form action="LoadInfo()" method="POST">-->
+        <div id="userForm">
+            <div class="col-sm-10">
+                <label>First Name</label>
+                <input type="text" class="form-control" id="firstname-register" placeholder="First" autocomplete="off"
+                       required>
+                <br>
+
+                <label>Last Name</label>
+                <input type="text" class="form-control" id="lastname-register" placeholder="Last" autocomplete="off"
+                       required>
+                <br>
+
+                <label>Employee ID</label>
+                <input type="text" class="form-control" id="empId-register" placeholder="Employee ID" autocomplete="off"
+                       required>
+                <br>
+
+                <label>Email</label>
+                <input type="text" class="form-control" id="email-register" placeholder="employee@example.com"
+                       autocomplete="off" required>
+                <br>
+
+                <label>Position</label>
+                <input type="text" class="form-control" id="pos_register" placeholder="Position" autocomplete="off"
+                       required>
+                <br>
+
+                <h6>Mentor/Mentee</h6>
+                <label class="dropdownList-lot">
+                    <select id="status" class="form-control">
+                        <option value="Mentor">Mentor</option>
+                        <option value="Mentee">Mentee</option>
+                    </select>
+                </label>
+                <br>
+
+                <h6>Department</h6>
+                <label class="dropdownList-lot">
+                    <select id="dept" class="form-control">
+                        <option value="Sales">Sales</option>
+                        <option value="Manufacturing">Manufacturing</option>
+                        <option value="Administrative">Administrative</option>
+                    </select>
+                </label>
+                <br>
+
+                <label>Password</label>
+                <input type="password" class="form-control" id="password-register" placeholder="Create a password"
+                       required>
+                <br>
+
+            </div>
+        </div>
+        <br>
+
+        <div class="col-md-auto">
+            <button id="Submit" type="submit" onclick="javascript: AddUserHandler();"
+                    class="btn btn-primary btn-block">
+                Create Account
+            </button>
+        </div>
+        <!--</form>-->
+    </div>
+
+    <br>
+
+    <footer class="border-top text-center small text-muted py-3">
+        <p class="m-0">Copyright &copy; 2020 <a href="/" class="text-muted">Abracadevs</a>. All rights reserved.</p>
+    </footer>
+
+    <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+
+</body>
+
+</html>
