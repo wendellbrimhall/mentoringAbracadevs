@@ -2,8 +2,17 @@
 <html>
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Admin: View all account info</title>
-
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"
+            integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0"
+            crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link src="table.css" type="text/css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script type="text/javascript">
@@ -17,7 +26,7 @@
         });
 
         // this function display all account info
-         async function loadAccounts() {
+        async function loadAccounts() {
 
             var webMethod = "AccountServices.asmx/GetAllAccountInfo";
             var parameters = "{}";
@@ -88,7 +97,7 @@
                         tableRowNumber += 1;
                     }
                     accountsArray = infoArray;
-                }              
+                }
             });
         }
 
@@ -155,49 +164,80 @@
             });
         }
     </script>
-
-    <style>
-        #infoTableId th, #infoTableId td {
-            padding-left: 15px;
-            padding-right: 15px;
-        }
-
-        #infoTableId {
-            border: 1px solid black;
-            background-color: sandybrown;
-        }
-
-        #submitButtonId {
-            padding: 10px;
-            border: solid 1px black;
-            background-color: aquamarine;
-            margin-top: 15px;
-        }
-    </style>
 </head>
+
+<style>
+
+    #infoTableId {
+        border: 1px solid black;
+        background-color: sandybrown;
+        
+    }
+
+    #submitButtonId {
+        padding: 10px;
+        border: solid 1px black;
+        background-color: aquamarine;
+        margin-top: 15px;
+    }
+
+    .row-header {
+        font-weight: 900;
+        color: black;
+        border-bottom: 1px solid black
+
+    }
+
+</style>
 
 <body>
 
-    <div class="accountInfo">
-        <h1>User Information</h1>
-        <hr />
+    <header class="header-bar mb-3">
+        <div class="container d-flex flex-column flex-md-row align-items-center p-3">
+            <h4 class="my-0 mr-md-auto font-weight-normal">
+                <a href="/home.html" class="text-white">AbracaMentoring</a>
+            </h4>
+            <div class="flex-row my-3 my-md-0">
+                <a class="btn btn-sm btn-success mr-2" href="/accountInfo.html">Account</a>
+                <a class="btn btn-sm btn-success mr-2" href="/home.html">Home</a>
+                <a class="btn btn-sm btn-success mr-2" href="./createEvent.html">Create Event</a>
+                <form action="/logout" method="POST" class="d-inline">
+                    <!--<button class="btn btn-sm btn-secondary">Sign Out</button>-->
+                    <a class="btn btn-sm btn-secondary mr-2" onclick="LogOutHandler()" href="/logOn.html">Sign Out</a>
 
-        <table class="InfoTable" id="infoTableId">
-            <tr>
-                <td>User ID</td>
-                <td>First Name</td>
-                <td>Last Name</td>
-                <td>Employee ID</td>
-                <td>Email Address</td>
-                <td>Department</td>
-                <td>Position</td>
-                <td>Status</td>
-                <td>Mentor</td>
-            </tr>
-        </table>
+                </form>
+            </div>
+        </div>
+    </header>
 
-        <button id="submitButtonId" onclick="submitButton()">Submit</button>
+    <div class="container py-md-9 container--wide">
+        <div class="accountInfo">
+            <h3>User Information</h3>
+            <hr />
+
+            <table class="InfoTable" id="infoTableId">
+                <tr>
+                    <td class="row-header">User ID</td>
+                    <td class="row-header">First Name</td>
+                    <td class="row-header">Last Name</td>
+                    <td class="row-header">Employee ID</td>
+                    <td class="row-header">Email Address</td>
+                    <td class="row-header">Department</td>
+                    <td class="row-header">Position</td>
+                    <td class="row-header">Status</td>
+                    <td class="row-header">Mentor</td>
+                </tr>
+            </table>
+
+            <button id="submitButtonId" onclick="submitButton()">Submit</button>
+        </div>
     </div>
+
+    <br>
+
+    <footer class="border-top text-center small text-muted py-3">
+        <p class="m-0">Copyright &copy; 2020 <a href="/" class="text-muted">Abracadevs</a>. All rights reserved.</p>
+    </footer>
 
 </body>
 </html>

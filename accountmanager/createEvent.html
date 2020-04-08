@@ -2,7 +2,19 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Admin: Create Event</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"
+            integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0"
+            crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <link src="table.css" type="text/css" />
+
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script type="text/javascript">
         var modal;
@@ -363,9 +375,29 @@
 
 
 </head>
+
+<header class="header-bar mb-3">
+    <div class="container d-flex flex-column flex-md-row align-items-center p-3">
+        <h4 class="my-0 mr-md-auto font-weight-normal">
+            <a href="/home.html" class="text-white">AbracaMentoring</a>
+        </h4>
+        <div class="flex-row my-3 my-md-0">
+            <a class="btn btn-sm btn-success mr-2" href="/accountInfo.html">Account</a>
+            <a class="btn btn-sm btn-success mr-2" href="/home.html">Home</a>
+            <a class="btn btn-sm btn-success mr-2" href="./createEvent.html">Create Event</a>
+            <form action="/logout" method="POST" class="d-inline">
+                <!--<button class="btn btn-sm btn-secondary">Sign Out</button>-->
+                <a class="btn btn-sm btn-secondary mr-2" onclick="LogOutHandler()" href="/logOn.html">Sign Out</a>
+
+            </form>
+        </div>
+    </div>
+</header>
+
+
 <body onload="initialize()">
 
-    <div>
+    <div class="container py-md-9 container--narrow">
         <div>
             <label for="q1">When are you most available?</label>
             <br />
@@ -377,7 +409,7 @@
             </select>
         </div>
         <br />
-       
+
         <div>
             <label for="q2">Do you like to drink?</label>
             <br />
@@ -388,7 +420,7 @@
             </select>
         </div>
         <br />
-       
+
 
         <div>
             <label for="q3">What are your favorite type of foods?</label>
@@ -404,7 +436,7 @@
             </select>
         </div>
         <br />
-     
+
         <div>
             <label for="q4">What are your favorite sports?</label>
             <br />
@@ -417,7 +449,7 @@
             </select>
         </div>
         <br />
-      
+
         <div>
             <label for="q5">What type of outdoor activities do you enjoy?</label>
             <br />
@@ -431,7 +463,7 @@
             </select>
         </div>
         <br />
-      
+
         <div>
             <button id="search" onclick="search()">Submit</button>
         </div>
@@ -440,132 +472,141 @@
         </div>
     </div>
 
-    <div class="accountInfo">
-        <h1>Search results</h1>
-        <hr />
+    <br />
 
-        <table class="InfoTable" id="infoTableId">
-            <tr>
-                <th>User ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Employee ID</th>
-                <th>Email Address</th>
-                <th>Department</th>
-                <th>Position</th>
-                <th>Status</th>
-            </tr>
-        </table>
-    </div>
-    <style>
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0,0,0); /* Fallback color */
-            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-        }
-
-        /* Modal Content/Box */
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto; /* 15% from the top and centered */
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%; /* Could be more or less, depending on screen size */
-        }
-
-        /* The Close Button */
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-            .close:hover,
-            .close:focus {
-                color: black;
-                text-decoration: none;
-                cursor: pointer;
+    <div class="container py-md-9 container--narrow">
+        <div class="accountInfo">
+            <h2>Search results</h2>
+            <hr />
+            <br />
+            <table class="InfoTable" id="infoTableId">
+                <tr>
+                    <th>User ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Employee ID</th>
+                    <th>Email Address</th>
+                    <th>Department</th>
+                    <th>Position</th>
+                    <th>Status</th>
+                </tr>
+            </table>
+        </div>
+        </div>
+        <style>
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed; /* Stay in place */
+                z-index: 1; /* Sit on top */
+                left: 0;
+                top: 0;
+                width: 100%; /* Full width */
+                height: 100%; /* Full height */
+                overflow: auto; /* Enable scroll if needed */
+                background-color: rgb(0,0,0); /* Fallback color */
+                background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
             }
 
+            /* Modal Content/Box */
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto; /* 15% from the top and centered */
+                padding: 20px;
+                border: 1px solid #888;
+                width: 80%; /* Could be more or less, depending on screen size */
+            }
 
-    </style>
+            /* The Close Button */
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
 
-    <div id="myModal" class="modal">
+                .close:hover,
+                .close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+        </style>
 
-        <!-- Modal content -->
-        <div class="modal-content">
-            <span id="xbutton" class="close">&times;</span>
-            <h3>Create New Event</h3>
-            <br />
-            <form id="event_data">
-                <span>
-                    <Label>Event Name</Label>
-                    <input name="eventName" id="eventName" type="text"
-                           placeholder="Event Name" autocomplete="off" required />
-                </span>
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span id="xbutton" class="close">&times;</span>
+                <h3>Create New Event</h3>
                 <br />
-                <span>
-                    <Label>Date</Label>
-                    <input name="eventDate" id="eventDate" type="text"
-                           placeholder="YYYY/MM/DD" autocomplete="off" required />
-                </span>
-                <br />
-                <span>
-                    <Label>location</Label>
-                    <input name="location" id="eventLocation" type="text"
-                           placeholder="Enter Location" autocomplete="off" required />
-                </span>
-                <br />
-                <span>
-                    <label for="type-register">Type</label>
-                    <select id="eventType">
-                        <option value="Meal">Meal</option>
-                        <option value="Sporting">Sporting</option>
-                        <option value="Outdoors">Outdoors</option>
-                    </select>
-                </span>
-                <br />
+                <form id="event_data">
+                    <span>
+                        <Label>Event Name</Label>
+                        <input name="eventName" id="eventName" type="text"
+                               placeholder="Event Name" autocomplete="off" required />
+                    </span>
+                    <br />
+                    <span>
+                        <Label>Date</Label>
+                        <input name="eventDate" id="eventDate" type="text"
+                               placeholder="YYYY/MM/DD" autocomplete="off" required />
+                    </span>
+                    <br />
+                    <span>
+                        <Label>location</Label>
+                        <input name="location" id="eventLocation" type="text"
+                               placeholder="Enter Location" autocomplete="off" required />
+                    </span>
+                    <br />
+                    <span>
+                        <label for="type-register">Type</label>
+                        <select id="eventType">
+                            <option value="Meal">Meal</option>
+                            <option value="Sporting">Sporting</option>
+                            <option value="Outdoors">Outdoors</option>
+                        </select>
+                    </span>
+                    <br />
 
 
-                <span>
-                    <Label>Description</Label>
-                    <textarea name="textarea" style="width:250px;height:50px;" id="eventDescription"></textarea>
-                </span>
-                <br />
-                <Label>Invite:</Label>
-                <div id="addAttendeeList">
+                    <span>
+                        <Label>Description</Label>
+                        <textarea name="textarea" style="width:250px;height:50px;" id="eventDescription"></textarea>
+                    </span>
+                    <br />
+                    <Label>Invite:</Label>
+                    <div id="addAttendeeList">
 
-                </div>
-
-
-            </form>
-
-            <input type="button" onclick="submitEvent()" value="Create">
-            <input type="button" onclick="clearForm()" value="Cancel">
+                    </div>
 
 
+                </form>
+
+                <input type="button" onclick="submitEvent()" value="Create">
+                <input type="button" onclick="clearForm()" value="Cancel">
+
+
+
+            </div>
 
         </div>
 
-    </div>
-    <script>
-        var cls = document.getElementById("xbutton");
+        <br>
 
-        cls.onclick = function () {
-            modal.style.display = "none";
-            clearForm()
-        }
+        <footer class="border-top text-center small text-muted py-3">
+            <p class="m-0">Copyright &copy; 2020 <a href="/" class="text-muted">Abracadevs</a>. All rights reserved.</p>
+        </footer>
 
-        
+        <script>
+            var cls = document.getElementById("xbutton");
 
-    </script>
+            cls.onclick = function () {
+                modal.style.display = "none";
+                clearForm()
+            }
+
+
+
+        </script>
 </body>
 </html>
