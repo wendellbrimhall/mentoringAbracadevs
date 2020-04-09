@@ -16,12 +16,10 @@ function getAllUsers() {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (array) {
-            console.log("function started");
-            console.log(array);
-
-            var infoArray = array.d;
-            getUsers = infoArray;
-            return infoArray;
+            console.log("getAllUsers started");           
+            getUsers = array.d;
+           
+            console.log(getUsers);
                      
         },
             error: function (e) {

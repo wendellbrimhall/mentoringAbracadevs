@@ -75,15 +75,12 @@
 
             $.each($("input[name='invite']:checked"), function () {
                 inviteList.push($(this).val());
-                forEach(getUsers){
-                    console.log(getUsers[i]["email"]);
-                }
             });
+  
 
             inviteStr = inviteList.toString();
             console.log(inviteStr);
-            console.log(userIDList);
-            console.log(getUsers)
+         
 
             var webMethod = "AccountServices.asmx/NewEvent";
           

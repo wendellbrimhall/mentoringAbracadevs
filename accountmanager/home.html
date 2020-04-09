@@ -18,9 +18,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="./jquery.cleditor.css" rel="stylesheet" type="text/css" />
     <script src="./jquery.cleditor.js" type="text/javascript"></script>
+    <script type="text/javascript" src="./scripts/getData.js"></script>
 
     <script type="text/javascript">
         var modal;
+        var mentorEmail;
+        var mentorFirst;
+        var mentorLast;
 
         $(document).ready(function () {
             var options = {
@@ -47,12 +51,57 @@
 
         function sendMentorEmail() {
             modal.style.display = "block";
+            var mentorID = getCurrentUser[0]["mentorID"];          
+
+            for (var i = 0; i < getUsers.length; i++) {
+                if (getUsers[i]["userID"] == mentorID) {
+                    mentorEmail = getUsers[i]["email"];
+                    mentorFirst = getUsers[i]["firstName"];
+                    mentorLast = getUsers[i]["lastName"];
+                }
+            }
+
+            var subjectInfo = mentorFirst + " " + mentorLast + "  (" + mentorEmail + ")";
+            console.log(subjectInfo);
+            document.getElementById('mentorInfo').innerHTML = subjectInfo;
+
         }
 
         function send() {
             var getMessage = $("#editor").val();
             console.log(getMessage);
+            var mentorID = getCurrentUser[0]["mentorID"];
+            
+     
+            console.log(mentorID);
+                 
+
+
+            var webMethod = "AccountServices.asmx/SendEmailToMentor";
+            console.log("SubmitEvent() started");
+            var parameters =
+                "{recipient: '" + mentorEmail + "', body: '" + getMessage + "'}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var responseFromServer = msg.d;
+                    console.log(responseFromServer);
+                },
+                error: function (e) {
+                    var responseFromServer = e.d;
+                    alert(responseFromServer);
+                },
+            }); //end ajax post
         }
+
+
+        
 
         function loadReports() {
 
@@ -247,6 +296,12 @@
                 <span id="xbutton" class="close">&times;</span>
 
                 <h3>Email Mentor</h3>
+                <p id="mentorInfo"></p>
+                <span>               
+                    <Label>Subject:</Label>
+                    <input name="subject" id="subjectId" type="text"
+                            autocomplete="off" />
+                </span>
 
 
                 <div>
@@ -285,5 +340,19 @@
     </div>
 
 </body>
+
+<script>
+
+
+    $(document).ready(function () {
+
+        getAllUsers(); // This will store all user data in array called getUsers 
+        getAllEvents(); // This will store all event data in array called getEvents
+        //getCurrentUserData(); // this stores the current users data in an array called getCurrentUser. This calls session data, so if it is uncommented, it was cause an error if you do not login first.
+        
+    });
+
+
+</script>
 
 </html>

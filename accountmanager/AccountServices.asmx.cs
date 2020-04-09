@@ -518,6 +518,44 @@ namespace accountmanager
             }
             sqlConnection.Close();
         }
+
+        [WebMethod(EnableSession = true)]
+        public void SendEmailToMentor(string recipient, string body, string subject)
+        ///This webmethod will send out an email from cis440parking@asu.edu using googles
+        ///SMTP server. 
+        {
+            var toAddress = recipient;
+            var replyTo = Session["email"].ToString();
+            var first = Session["first_name"].ToString();
+            var last = Session["last_name"].ToString();
+            
+
+            using (MailMessage mail = new MailMessage())
+            {
+
+                var smtpAddr = "smtp.gmail.com";
+                var portNumber = 587;
+                var enableSSL = true;
+                var fromAddress = "cis440parking@gmail.com";
+                var password = "!!Abracadevs";
+                
+
+                mail.From = new MailAddress(fromAddress);
+                mail.To.Add(toAddress);
+                mail.Subject = subject;
+                mail.Body = body;
+                mail.IsBodyHtml = true;
+                mail.ReplyTo = new MailAddress(replyTo); 
+
+                using (SmtpClient smtp = new SmtpClient(smtpAddr, portNumber))
+                {
+                    smtp.Credentials = new NetworkCredential(fromAddress, password);
+                    smtp.EnableSsl = enableSSL;
+                    smtp.Send(mail);
+                }
+            }
+        }
+
     }
  }
 
