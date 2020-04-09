@@ -97,10 +97,19 @@
     <Content Include="home.html" />
     <Content Include="createEvent.html" />
     <Content Include="admin.html" />
+    <Content Include="images\buttons.gif" />
+    <Content Include="images\toolbar.gif" />
     <Content Include="index.css" />
+    <Content Include="jquery.cleditor.css" />
+    <Content Include="jquery.cleditor.js" />
+    <Content Include="jquery.cleditor.min.js" />
     <Content Include="logOn.html" />
     <Content Include="questionnaireB.html" />
+
     <Content Include="table.css" />
+
+    <Content Include="scripts\getData.js" />
+
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>

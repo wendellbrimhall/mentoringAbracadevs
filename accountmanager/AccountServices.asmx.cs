@@ -156,46 +156,30 @@ namespace accountmanager
         public Account[] ViewAccountInfo()
         {
             // get info of an account
-            var user_id = Session["user_id"];
+            var user_id = Convert.ToInt32(Session["user_id"]);
             var first_name = Session["first_name"];
             var last_name = Session["last_name"];
             var employee_id = Session["employee_id"];
-            var email = Session["email"];
-            var department = Session["department"];
-            var position = Session["position"];
+            var Email = Session["email"];
+            var Department = Session["department"];
+            var Position = Session["position"];
+            var mentor = Convert.ToInt32(Session["mentorID"]);
 
-            DataTable sqlDt = new DataTable("user");
-
-            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-                        
-            // if the user is not an admin, only his/ her account info will be displayed 
-            //string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='" + email + "';";
-
-            // testing
-            string sqlSelect = "SELECT * FROM Users_mentoring WHERE email ='eee@gmail.com';";
-
-            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
-            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
-
-            //gonna use this to fill a data table
-            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-            sqlDa.Fill(sqlDt);
-
-            //loop through each row in the dataset
+           
             List<Account> accountInfo = new List<Account>();
-            for (int i = 0; i < sqlDt.Rows.Count; i++)
+
+            accountInfo.Add(new Account
             {
-                accountInfo.Add(new Account
-                {
-                    userID = Convert.ToInt32(sqlDt.Rows[i]["userID"]),
-                    firstName = sqlDt.Rows[i]["firstName"].ToString(),
-                    lastName = sqlDt.Rows[i]["lastName"].ToString(),
-                    employeeID = sqlDt.Rows[i]["employeeID"].ToString(),
-                    email = sqlDt.Rows[i]["email"].ToString(),
-                    department = sqlDt.Rows[i]["department"].ToString(),
-                    position = sqlDt.Rows[i]["position"].ToString()
+                userID = user_id,
+                firstName = first_name.ToString(),
+                lastName = last_name.ToString(),
+                employeeID = employee_id.ToString(),
+                email = Email.ToString(),
+                department = Department.ToString(),
+                position = Position.ToString(),
+                mentorID = mentor
                 });
-            }
+            
             //convert the list of accounts to an array and return!
             return accountInfo.ToArray();
         }

@@ -16,12 +16,17 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="./scripts/getData.js"></script>
+    
     <script type="text/javascript">
         var modal;
 
         var firstNameList = [];
         var lastNameList = [];
         var emailList = [];
+        var userArray;
+        
+                  
 
         function initialize() {
             modal = document.getElementById("myModal");
@@ -40,6 +45,7 @@
             console.log(firstNameList);
             console.log(lastNameList);
             console.log(emailList);
+            console.log(getUsers)
 
             for (var i = 0; i < emailList.length; i++) {
                 checkboxStr +=
@@ -63,16 +69,24 @@
             var eventType = $("#eventType").val();
             var eventDescription = $("#eventDescription").val();
             var inviteStr;
+            var email;
+            var userIDList = [];
+            var uid;
 
             $.each($("input[name='invite']:checked"), function () {
                 inviteList.push($(this).val());
+                forEach(getUsers){
+                    console.log(getUsers[i]["email"]);
+                }
             });
 
             inviteStr = inviteList.toString();
             console.log(inviteStr);
+            console.log(userIDList);
+            console.log(getUsers)
 
             var webMethod = "AccountServices.asmx/NewEvent";
-            console.log("SubmitEvent() started");
+          
             var parameters =
                 "{name: '" +
                 $("#eventName").val() +
@@ -96,15 +110,15 @@
                 success: function (msg) {
                     var responseFromServer = msg.d;
                     console.log(responseFromServer);
-                    emailAttendees(
-                        inviteStr,
-                        eventName,
-                        eventDate,
-                        eventLocation,
-                        eventType,
-                        eventDescription
-                    );
-                    recordInvite(responseFromServer, inviteStr);
+                    //emailAttendees(
+                     //   inviteStr,
+                      //  eventName,
+                      //  eventDate,
+                      //  eventLocation,
+                       // eventType,
+                       // eventDescription
+                    //);
+                    //recordInvite(responseFromServer, inviteStr);
                     alert("Event Created!");
                     clearForm();
                 },
@@ -605,6 +619,14 @@
                 clearForm()
             }
 
+
+        $(document).ready(function () {           
+           
+            getAllUsers();
+            getAllEvents();
+            //getCurrentUserData();
+        });
+        
 
 
         </script>
