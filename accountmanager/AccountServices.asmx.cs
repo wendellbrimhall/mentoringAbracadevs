@@ -451,15 +451,16 @@ namespace accountmanager
         }
 
         [WebMethod]
-        public string RecordInvite(string eventID, string emailList)
+        public string RecordInvite(string eventID, string emailList, string userList)
         {
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
             string sqlSelect = "";
             string[] split = emailList.Split(',');
+            string[] users = userList.Split(',');
 
             for (int i = 0; i < split.Length; i++)
             {
-                sqlSelect = sqlSelect + "INSERT INTO `abracadevs`.`Reservations_mentoring` (`eventID`, `email`) VALUES('" + eventID + "', '" + split[i] + "');";
+                sqlSelect = sqlSelect + "INSERT INTO `abracadevs`.`Reservations_mentoring` (`eventID`, `email`, `user_id` ) VALUES('" + eventID + "', '" + split[i] + "', '" + users[i] + "');";
             }
 
 

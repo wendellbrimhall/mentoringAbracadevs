@@ -71,13 +71,22 @@
             var inviteStr;
             var email;
             var userIDList = [];
-            var uid;
+            var userIDstr;
 
             $.each($("input[name='invite']:checked"), function () {
                 inviteList.push($(this).val());
-            });
-  
+                email = $(this).val();
 
+                for (var i = 0; i < getUsers.length; i++) {
+                    if (getUsers[i]["email"] == email) {
+                        mentorEmail = getUsers[i]["email"];
+                        userIDList.push(getUsers[i]["userID"]);
+                    }
+                } 
+            });
+
+            console.log(userIDList);
+            userIDstr = userIDList.toString();
             inviteStr = inviteList.toString();
             console.log(inviteStr);
          
@@ -97,7 +106,7 @@
                 $("#eventDescription").val() +
                 "'}";
 
-            //jQuery ajax method
+           //jQuery ajax method
             $.ajax({
                 type: "POST",
                 url: webMethod,
@@ -107,15 +116,15 @@
                 success: function (msg) {
                     var responseFromServer = msg.d;
                     console.log(responseFromServer);
-                    //emailAttendees(
-                     //   inviteStr,
-                      //  eventName,
-                      //  eventDate,
-                      //  eventLocation,
-                       // eventType,
-                       // eventDescription
-                    //);
-                    //recordInvite(responseFromServer, inviteStr);
+                    emailAttendees(
+                       inviteStr,
+                        eventName,
+                        eventDate,
+                        eventLocation,
+                        eventType,
+                        eventDescription
+                    );
+                    recordInvite(responseFromServer, inviteStr, userIDstr);
                     alert("Event Created!");
                     clearForm();
                 },
@@ -123,7 +132,7 @@
                     var responseFromServer = e.d;
                     alert(responseFromServer);
                 },
-            }); //end ajax post
+            }); //end ajax post 
         }
 
         function emailAttendees(
@@ -168,11 +177,11 @@
             }); //end ajax post
         }
 
-        function recordInvite(eventID, emailList) {
+        function recordInvite(eventID, emailList, userList) {
             var webMethod = "AccountServices.asmx/RecordInvite";
             console.log("SubmitEvent() started");
             var parameters =
-                "{eventID: '" + eventID + "', emailList: '" + emailList + "'}";
+                "{eventID: '" + eventID + "', emailList: '" + emailList + "', userList: '"+ userList +"'}";
 
             //jQuery ajax method
             $.ajax({
