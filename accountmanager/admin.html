@@ -9,12 +9,8 @@
     <script type="text/javascript">
 
         var tableRowLength;
-        var accountsArray;
-
-
-        $(document).ready(function () {
-            accountsArray = loadAccounts();
-        });
+        var accountsArray; //variable that will store array of user information.
+       
 
         // this function display all account info
          async function loadAccounts() {
@@ -34,6 +30,8 @@
                     console.log(array);
 
                     var infoArray = array.d;
+                    accountsArray = infoArray; //Store infoArray as a variable so that it can be accessed again if needed.
+
 
                     var tableRowNumber = 1;
                     var mentorList = "<option value='0'>&nbsp</option>";
@@ -87,7 +85,7 @@
                         console.log(infoArray[i]["mentorID"]);
                         tableRowNumber += 1;
                     }
-                    accountsArray = infoArray;
+                   
                 }              
             });
         }
@@ -112,8 +110,7 @@
                 }
             });
 
-            console.log(accountsArray[1]["firstName"]);
-
+          
             userIDList.shift();
             mentorIDList.shift();
 
@@ -176,7 +173,7 @@
     </style>
 </head>
 
-<body>
+<body onload="loadAccounts()">
 
     <div class="accountInfo">
         <h1>User Information</h1>

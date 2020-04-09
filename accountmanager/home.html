@@ -16,8 +16,43 @@
     <link rel="stylesheet" type="text/css" href="table.css">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href="./jquery.cleditor.css" rel="stylesheet" type="text/css" />
+    <script src="./jquery.cleditor.js" type="text/javascript"></script>
 
     <script type="text/javascript">
+        var modal;
+
+        $(document).ready(function () {
+            var options = {
+                width: 480,
+                height: 300
+            }
+
+            modal = document.getElementById("myModal");
+
+            var editor = $("#editor").cleditor(options)[0];
+
+            $("#btnClear").click(function (e) {
+                e.preventDefault();
+                editor.focus();
+                editor.clear();
+            });
+
+            $("#btnGetHtml").click(function () {
+                alert($("#editor").val());
+            });
+
+        });
+
+
+        function sendMentorEmail() {
+            modal.style.display = "block";
+        }
+
+        function send() {
+            var getMessage = $("#editor").val();
+            console.log(getMessage);
+        }
 
         function loadReports() {
 
@@ -107,6 +142,7 @@
                 <a class="btn btn-sm btn-success mr-2" href="admin.html">Admin</a>
                 <a class="btn btn-sm btn-success mr-2" href="accountInfo.html">Account Info</a>
                 <a class="btn btn-sm btn-success mr-2" href="addUser.html">Add User</a>
+                <input class="btn btn-sm btn-success mr-2" type=button onclick="sendMentorEmail()" value="Email Mentor">
                 <form action="/logout" method="POST" class="d-inline">
                     <!--<button class="btn btn-sm btn-secondary">Sign Out</button>-->
                     <a class="btn btn-sm btn-secondary mr-2" href="logOn.html">Sign Out</a>
@@ -147,35 +183,95 @@
         </div>
         <br />
         <br />
+ 
 
-        <h4>Mentor Meeting</h4>
-        <hr />
-        <div class="bootstrap-iso">
-            <div class="container-fluid">
-                <div class="row justify-content-center">
-                    <div class="col-md-6 col-sm-6 col-xs-12">
-                        <div class="form-group">
-                            <label class="control-label requiredField" for="date">
-                                Date
-                                <span class="asteriskField">
-                                    *
-                                </span>
-                            </label>
-                            <input class="form-control" id="enteredDate" name="date" placeholder="YYYY/MM/DD"
-                                   type="text" />
-                        </div>
-                        <div class="form-group">
-                            <div>
-                                <button onclick="" class="btn btn-primary " name="submit" type="submit">
-                                    Submit
-                                </button>
-                            </div>
-                        </div>
 
-                    </div>
+        
+
+
+        <style>
+            .modal {
+                display: none;
+                /* Hidden by default */
+                position: fixed;
+                /* Stay in place */
+                z-index: 1;
+                /* Sit on top */
+                left: 0;
+                top: 0;
+                width: 100%;
+                /* Full width */
+                height: 100%;
+                /* Full height */
+                overflow: auto;
+                /* Enable scroll if needed */
+                background-color: rgb(0, 0, 0);
+                /* Fallback color */
+                background-color: rgba(0, 0, 0, 0.4);
+                /* Black w/ opacity */
+            }
+
+            /* Modal Content/Box */
+            .modal-content {
+                background-color: #fefefe;
+                margin: 15% auto;
+                /* 15% from the top and centered */
+                padding: 20px;
+                border: 1px solid #888;
+                width: 600px;
+                /* Could be more or less, depending on screen size */
+            }
+
+            /* The Close Button */
+            .close {
+                color: #aaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+                .close:hover,
+                .close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+        </style>
+
+
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span id="xbutton" class="close">&times;</span>
+
+                <h3>Email Mentor</h3>
+
+
+                <div>
+                    <textarea id="editor" rows="0" cols="0"></textarea>
                 </div>
+
+
+                <input type="button" onclick="send()" value="Send">
+                <input type="button" onclick="clearForm()" value="Cancel">
+
+
+
             </div>
+
         </div>
+        <script>
+            var cls = document.getElementById("xbutton");
+
+            cls.onclick = function () {
+                modal.style.display = "none";
+                clearForm()
+            }
+
+
+        </script>
+
 
         <br />
         <br />
