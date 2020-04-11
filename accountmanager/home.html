@@ -22,9 +22,11 @@
 
     <script type="text/javascript">
         var modal;
+        var modal2;
         var mentorEmail;
         var mentorFirst;
         var mentorLast;
+
        
 
         $(document).ready(function () {
@@ -34,6 +36,7 @@
             }
 
             modal = document.getElementById("myModal");
+            modal2 = document.getElementById("myModal2");
 
             var editor = $("#editor").cleditor(options)[0];
 
@@ -166,6 +169,9 @@
             }
 
             document.getElementById('mentorInfo').innerHTML = subjectInfo;
+            
+
+
 
         }
   
@@ -209,12 +215,13 @@
                             var fourth = third + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
                             var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
                             var sixth = fifth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
+                            var seventh = sixth + "<div class='cell' data-title='text'><a   href='javascript: void (0)';  onclick='showEventInfo(" + i + ");' >View Event Info</a></div>"
 
-                            console.log(sixth);
-
-                            tableBody.append(sixth);
+                            tableBody.append(seventh);
                         }
                     }
+
+                    getEvents = data;
 
                 },
                 error: function (e) {
@@ -222,6 +229,25 @@
                 }
             });
 
+        }
+
+        function showEventInfo(counter) {
+            modal2.style.display = "block";
+            var eventID = getEvents[counter].eventID;
+
+            var eventString = "<div>Event:" + getEvents[counter].eventName + "</div>";
+            eventString = eventString + "<div>Date: " + getEvents[counter].date + " </div>";
+            eventString = eventString + "<div>Location: " + getEvents[counter].location + " </div>";
+            eventString = eventString + "<div>Type of Event: " + getEvents[counter].type + " </div>";
+            eventString = eventString + "<div>Descritpion: " + getEvents[counter].description + " </div>";
+            eventString = eventString + "<div><input type='button' id='attendButton' value='Attend' onclick='attendButton(" + eventID + ")'></div>";
+
+            $("#eventInfo").append(eventString);
+
+        }
+
+        function clearEventModal() {
+            $("#eventInfo").empty();
         }
 
     </script>
@@ -299,10 +325,10 @@
         </div>
         <br />
         <br />
- 
 
 
-        
+
+
 
 
         <style>
@@ -364,10 +390,10 @@
 
                 <h3>Email Mentor</h3>
                 <p id="mentorInfo"></p>
-                <span>               
+                <span>
                     <Label>Subject:</Label>
                     <input name="subject" id="subjectId" type="text"
-                            autocomplete="off" />
+                           autocomplete="off" />
                 </span>
 
 
@@ -376,7 +402,7 @@
                 </div>
 
 
-                <input type="button" id="send"  value="Send">
+                <input type="button" id="send" value="Send">
                 <input type="button" id="btnClear" value="Cancel">
 
 
@@ -384,16 +410,34 @@
             </div>
 
         </div>
+
+        <div id="myModal2" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span id="xbutton2" class="close">&times;</span>
+                <div id="eventInfo">
+
+                </div>
+
+                
+   
+
+            </div>
+
+        </div>
+
+
         <script>
-           /* var cls = document.getElementById("xbutton");
+            var cls = document.getElementById("xbutton2");
 
-            cls.onclick = function () {
-                modal.style.display = "none";
-                clearEmailModal();
-            } */
+             cls.onclick = function () {
+                 modal2.style.display = "none";
+                 clearEventModal();
+             } 
 
 
-        </script> 
+        </script>
 
 
         <br />
@@ -413,10 +457,10 @@
 
     $(document).ready(function () {
 
-        getCurrentUserData();
+        getCurrentUserData(); // this stores the current users data in an array called getCurrentUser. This calls session data, so if it is uncommented, it was cause an error if you do not login first.
         getAllUsers(); // This will store all user data in array called getUsers 
-        getAllEvents(); // This will store all event data in array called getEvents
-         // this stores the current users data in an array called getCurrentUser. This calls session data, so if it is uncommented, it was cause an error if you do not login first.
+        //getAllEvents(); // This will store all event data in array called getEvents
+        
         
     });
 
