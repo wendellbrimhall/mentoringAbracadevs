@@ -45,10 +45,11 @@ function getAllEvents() {
         dataType: "json",
         success: function (array) {
 
-            console.log(array);
-            var data = array.d;
+            
+            getEvents = array.d;
+            console.log(getEvents);
 
-            getEvents = data;
+           
 
         }
 
@@ -71,9 +72,8 @@ function getCurrentUserData() {
             console.log('Function started');
             console.log(array);
 
-            var infoArray = array.d;
+            getCurrentUser = array.d;
 
-            getCurrentUser = infoArray;
         }
     });
 }

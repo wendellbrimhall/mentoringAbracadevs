@@ -25,6 +25,7 @@
         var mentorEmail;
         var mentorFirst;
         var mentorLast;
+       
 
         $(document).ready(function () {
             var options = {
@@ -40,68 +41,134 @@
                 e.preventDefault();
                 editor.focus();
                 editor.clear();
+                modal.style.display = "none";
+                $('#mentorInfo').empty();
+                $('#subjectId').val("");
+
+                subjectId
             });
 
-            $("#btnGetHtml").click(function () {
-                alert($("#editor").val());
+            $('#send').click(function (e) {
+
+                var getMessage = $("#editor").val();
+                var mentorID = getCurrentUser[0]["mentorID"];
+                var getSubject = $('#subjectId').val();
+
+
+                console.log(mentorEmail);
+                console.log(getMessage);
+                console.log(getSubject)
+
+
+                var webMethod = "AccountServices.asmx/SendEmailToMentor";
+                console.log("SubmitEvent() started");
+                var parameters =
+                    "{to: '" + mentorEmail + "', body: '" + getMessage + "', subject: '" + getSubject + "'}";
+                console.log(parameters);
+
+                //jQuery ajax method
+                $.ajax({
+                    type: "POST",
+                    url: webMethod,
+                    data: parameters,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (msg) {
+                        var responseFromServer = msg.d;
+                        console.log(responseFromServer);
+                    },
+                    error: function (e) {
+                        var responseFromServer = e.d;
+                        alert(responseFromServer);
+                    },
+                }); //end ajax post
+
+                e.preventDefault();
+                editor.focus();
+                editor.clear();
+                $('#mentorInfo').empty();
+                $('#subjectId').val("");
+                modal.style.display = "none";
+
+
+
+                
             });
+
+            $('#xbutton').click(function (e) {
+
+                e.preventDefault();
+                editor.focus();
+                editor.clear();
+                modal.style.display = "none";
+                $('#mentorInfo').empty();
+                $('#subjectId').val("");
+
+
+            });
+
+           
 
         });
 
 
+        function clearEmailModal() {
+            var editor = $("#editor").cleditor(options)[0];
+                e.preventDefault();
+                editor.focus();
+                editor.clear()
+                
+                modal.style.display = "none";
+           
+        }
+
+
         function sendMentorEmail() {
             modal.style.display = "block";
-            var mentorID = getCurrentUser[0]["mentorID"];          
+            var subjectInfo;
 
-            for (var i = 0; i < getUsers.length; i++) {
-                if (getUsers[i]["userID"] == mentorID) {
-                    mentorEmail = getUsers[i]["email"];
-                    mentorFirst = getUsers[i]["firstName"];
-                    mentorLast = getUsers[i]["lastName"];
+            var mentorID = getCurrentUser[0]["mentorID"];
+            var mentorStatus = getCurrentUser[0]["status"];
+            
+            console.log(mentorStatus);
+
+            if (mentorID == 0) {
+                if (mentorStatus == "Mentor") {
+                    var userId = getCurrentUser[0]["userID"];
+                    console.log(userId);
+                    for (var i = 0; i < getUsers.length; i++) {
+                        if (userId == getUsers[i]["mentorID"]) {
+                            console.log("match")
+                            mentorEmail = getUsers[i]["email"];
+                            mentorFirst = getUsers[i]["firstName"];
+                            mentorLast = getUsers[i]["lastName"];
+                        }
+                    }
+                    subjectInfo = mentorFirst + " " + mentorLast + "  (" + mentorEmail + ")";  
+
                 }
+                else {
+
+                    $("#send").prop("disabled", true);
+                    subjectInfo = "You have not been assigned a mentor yet";
+                }
+            } else {
+                for (var i = 0; i < getUsers.length; i++) {
+                    if (getUsers[i]["userID"] == mentorID) {
+                        mentorEmail = getUsers[i]["email"];
+                        mentorFirst = getUsers[i]["firstName"];
+                        mentorLast = getUsers[i]["lastName"];
+                    }
+                }
+
+                subjectInfo = mentorFirst + " " + mentorLast + "  (" + mentorEmail + ")";             
+               
             }
 
-            var subjectInfo = mentorFirst + " " + mentorLast + "  (" + mentorEmail + ")";
-            console.log(subjectInfo);
             document.getElementById('mentorInfo').innerHTML = subjectInfo;
 
         }
-
-        function send() {
-            var getMessage = $("#editor").val();
-            console.log(getMessage);
-            var mentorID = getCurrentUser[0]["mentorID"];
-            
-     
-            console.log(mentorID);
-                 
-
-
-            var webMethod = "AccountServices.asmx/SendEmailToMentor";
-            console.log("SubmitEvent() started");
-            var parameters =
-                "{recipient: '" + mentorEmail + "', body: '" + getMessage + "'}";
-
-            //jQuery ajax method
-            $.ajax({
-                type: "POST",
-                url: webMethod,
-                data: parameters,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (msg) {
-                    var responseFromServer = msg.d;
-                    console.log(responseFromServer);
-                },
-                error: function (e) {
-                    var responseFromServer = e.d;
-                    alert(responseFromServer);
-                },
-            }); //end ajax post
-        }
-
-
-        
+  
 
         function loadReports() {
 
@@ -309,8 +376,8 @@
                 </div>
 
 
-                <input type="button" onclick="send()" value="Send">
-                <input type="button" onclick="clearForm()" value="Cancel">
+                <input type="button" id="send"  value="Send">
+                <input type="button" id="btnClear" value="Cancel">
 
 
 
@@ -318,15 +385,15 @@
 
         </div>
         <script>
-            var cls = document.getElementById("xbutton");
+           /* var cls = document.getElementById("xbutton");
 
             cls.onclick = function () {
                 modal.style.display = "none";
-                clearForm()
-            }
+                clearEmailModal();
+            } */
 
 
-        </script>
+        </script> 
 
 
         <br />
@@ -346,9 +413,10 @@
 
     $(document).ready(function () {
 
+        getCurrentUserData();
         getAllUsers(); // This will store all user data in array called getUsers 
         getAllEvents(); // This will store all event data in array called getEvents
-        getCurrentUserData(); // this stores the current users data in an array called getCurrentUser. This calls session data, so if it is uncommented, it was cause an error if you do not login first.
+         // this stores the current users data in an array called getCurrentUser. This calls session data, so if it is uncommented, it was cause an error if you do not login first.
         
     });
 

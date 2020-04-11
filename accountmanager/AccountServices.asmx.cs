@@ -156,13 +156,14 @@ namespace accountmanager
         public Account[] ViewAccountInfo()
         {
             // get info of an account
-            var user_id = Convert.ToInt32(Session["user_id"]);
+            var user_id = Convert.ToInt32(Session["userID"]);
             var first_name = Session["first_name"];
             var last_name = Session["last_name"];
             var employee_id = Session["employee_id"];
             var Email = Session["email"];
             var Department = Session["department"];
             var Position = Session["position"];
+            var Status = Session["status"];
             var mentor = Convert.ToInt32(Session["mentorID"]);
 
            
@@ -177,6 +178,7 @@ namespace accountmanager
                 email = Email.ToString(),
                 department = Department.ToString(),
                 position = Position.ToString(),
+                status = Status.ToString(),
                 mentorID = mentor
                 });
             
@@ -521,15 +523,16 @@ namespace accountmanager
         }
 
         [WebMethod(EnableSession = true)]
-        public void SendEmailToMentor(string recipient, string body, string subject)
+        public string SendEmailToMentor(string to, string body, string subject)
         ///This webmethod will send out an email from cis440parking@asu.edu using googles
         ///SMTP server. 
         {
-            var toAddress = recipient;
+            var toAddress = to;
             var replyTo = Session["email"].ToString();
             var first = Session["first_name"].ToString();
             var last = Session["last_name"].ToString();
-            
+
+            body = "<h3>You've received a new message from " + first + " " + last + "</h3>" + body;
 
             using (MailMessage mail = new MailMessage())
             {
@@ -554,7 +557,10 @@ namespace accountmanager
                     smtp.EnableSsl = enableSSL;
                     smtp.Send(mail);
                 }
+
             }
+            
+            return "Email Sent";
         }
 
     }
