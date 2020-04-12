@@ -225,6 +225,44 @@ namespace accountmanager
         }
 
         [WebMethod(EnableSession = true)]
+        public Eventz[] ViewUserEvents()
+        {
+            var userID = Convert.ToInt32(Session["userID"]);
+
+            DataTable sqlDt = new DataTable("Events_mentoring");
+
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            string sqlSelect = "SELECT * FROM abracadevs.Reservations_mentoring INNER JOIN abracadevs.Events_mentoring ON Events_mentoring.eventID = Reservations_mentoring.eventID Where rsvp='attending' AND user_id = '" + userID + "'; ";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            List<Eventz> eventz = new List<Eventz>();
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                eventz.Add(new Eventz
+                {
+                    eventID = Convert.ToInt32(sqlDt.Rows[i]["EventID"]),
+
+                    eventName = sqlDt.Rows[i]["eventName"].ToString(),
+                    date = sqlDt.Rows[i]["date"].ToString(),
+                    location = sqlDt.Rows[i]["location"].ToString(),
+                    type = sqlDt.Rows[i]["type"].ToString(),
+                    description = sqlDt.Rows[i]["description"].ToString(),
+
+                });
+            }
+
+            return eventz.ToArray();
+
+        }
+
+
+        [WebMethod(EnableSession = true)]
         public Account[] GetAllAccountInfo()
         {
             DataTable sqlDt = new DataTable("users");

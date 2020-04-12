@@ -100,6 +100,64 @@
         }
 
 
+        // this function grabs and display event history
+        function loadHistory() {
+
+            var webMethod = "AccountServices.asmx/ViewUserEvents";
+            console.log('Function started');
+            var parameters = "{}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+
+                    console.log(array);
+                    var data = array.d;
+                    console.log(data);
+
+                    var tableBody = $("#ev_table");
+
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+
+
+                        for (var i = 0; i < data.length; i++) {
+                            //This loop goes through each user with pending status and adds their first, last and email to a table
+                            //It will also dynamically add an approve and deny button to each row.
+                            var findRep = data[i].report_id;
+
+                            // variables will store the user_id and email address of each row, and place that data in the button function
+
+                            var tableBody = $("#ev_table");
+
+                            var first = "<div class='row'><div class='cell' data-title='First'>" + data[i].eventID + "</div>";
+                            var second = first + "<div class='cell' data-title='date'> " + data[i].eventName + "</div>";
+                            var third = second + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
+                            var fourth = third + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
+                            var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
+                            var sixth = fifth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
+                            var seventh = sixth + "<div class='cell' data-title='text'><a   href='javascript: void (0)';  onclick='' >Leave Feedback</a></div>"
+
+                            tableBody.append(seventh);
+                        }
+                    }
+
+                    getEvents = data;
+
+                },
+                error: function (e) {
+                    alert("this code will only execute if javascript is unable to access the webservice");
+                }
+            });
+
+        }
+
+
+
 
         function AttendingEvent(id) {
             var webMethod = "AccountServices.asmx/AttendingEvent";
@@ -152,7 +210,7 @@
     </script>
 </head>
 
-<body onload="LoadInfo(), LoadUserInvitedEvents()">
+<body onload="LoadInfo(), LoadUserInvitedEvents(), loadHistory()">
     <header class="header-bar mb-3">
         <div class="container d-flex flex-column flex-md-row align-items-center p-3">
             <h4 class="my-0 mr-md-auto font-weight-normal">
@@ -248,7 +306,7 @@
 
     <div class="container py-md-5 container--narrow">
 
-        <h4>Meeting History</h4>
+        <h4>Attended Event History</h4>
         <div class="table" id="ev_table" margin: 0px; margin-bottom: 0rem;>
 
             <div class="row header blue">
