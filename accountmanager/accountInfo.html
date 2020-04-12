@@ -54,10 +54,105 @@
                 }
             });
         }
+
+        function LoadUserInvitedEvents() {
+            var webMethod = "AccountServices.asmx/GetPendingReservation";
+            var parameters = "{}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    var data = array.d;
+
+                    console.log(data);
+
+                    var tableBody = $("#invited_table");
+
+                    for (var i = 0; i < data.length; i++) {
+                        var first = "<div class='row'><div class='cell' data-title='First'>" + data[i].eventID + "</div>";
+                        var second = first + "<div class='cell' data-title='date'> " + data[i].eventName + "</div>";
+                        var third = second + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
+                        var fourth = third + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
+                        var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
+                        var sixth = fifth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
+                        var seventh = sixth + "<div class='cell' data-title='text'><button onclick='javascript: AttendingEvent( " + data[i].eventID + ");'>Attending</button></div>";
+                        var eighth = seventh + "<div class='cell' data-title='notAttending'><button onclick='javascript: NotAttendingEvent(" + data[i].eventID + ");'>Not Attending</button></div>";
+
+                        //var first = "<div class='cell' data-title='Attending'><button onclick='javascript: AttendingEvent( " + eventID + ");'>Attending</button></div>";
+                        //var second = first + "<div class='cell' data-title='notAttending'><button onclick='javascript: NotAttendingEvent(" + eventID + ");'>Not Attending</button></div>";
+
+                        tableBody.append(eighth);
+                        
+                    }
+
+                    getEvents = data;
+   
+                },
+                error: function (e) {
+                    alert("this code will only execute if javascript is unable to access the webservice");
+                }
+            });
+        }
+
+
+
+        function AttendingEvent(id) {
+            var webMethod = "AccountServices.asmx/AttendingEvent";
+            // update rsvp as "attending" in the DB
+
+            var parameters = { eventID: id};
+
+            var json_data = JSON.stringify(parameters)
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: json_data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function () {
+                    alert("Attending Confirmed!")
+                    location.reload();
+                },
+                error: function () {
+                    alert("something broke");
+                }
+            });
+        }
+
+        function NotAttendingEvent(id) {
+            var webMethod = "AccountServices.asmx/NotAttendingEvent";
+            // update rsvp as "not attending" in the DB
+            var parameters = { eventID: id};
+
+            var json_data = JSON.stringify(parameters)
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: json_data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function () {
+                    alert("Not Attending Confirmed!")
+                    location.reload();
+                },
+                error: function () {
+                    alert("something broke");
+                }
+            });
+        }
     </script>
 </head>
 
-<body onload="LoadInfo()">
+<body onload="LoadInfo(), LoadUserInvitedEvents()">
     <header class="header-bar mb-3">
         <div class="container d-flex flex-column flex-md-row align-items-center p-3">
             <h4 class="my-0 mr-md-auto font-weight-normal">
@@ -116,7 +211,40 @@
     </div>
 
 
+    <div class="container py-md-5 container--narrow">
+        <h4>Invited Events</h4>
+        <div class="table" id="invited_table" margin: 0px; margin-bottom: 0rem;>
 
+            <div class="row header blue">
+                <div class="cell">
+                    Event ID
+                </div>
+                <div class="cell">
+                    Event Name
+                </div>
+                <div class="cell">
+                    Date
+                </div>
+                <div class="cell">
+                    Location
+                </div>
+                <div class="cell">
+                    Type
+                </div>
+                <div class="cell">
+                    Description
+                </div>
+                <div class="cell">
+                    Attending
+                </div>
+                <div class="cell">
+                    Not Attending
+                </div>
+            </div>
+
+        </div>
+        <br />
+    </div>
 
     <div class="container py-md-5 container--narrow">
 
@@ -149,7 +277,7 @@
 
         </div>
         <br />
-        </div>
+    </div>
 
 
 
@@ -160,21 +288,21 @@
 
 
 
-        <br>
+    <br>
 
-        <footer class="border-top text-center small text-muted py-3">
-            <p class="m-0">Copyright &copy; 2020 <a href="/" class="text-muted">Abracadevs</a>. All rights reserved.</p>
-        </footer>
+    <footer class="border-top text-center small text-muted py-3">
+        <p class="m-0">Copyright &copy; 2020 <a href="/" class="text-muted">Abracadevs</a>. All rights reserved.</p>
+    </footer>
 
-        <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-                integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-                crossorigin="anonymous"></script>-->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
-                integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
-                crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
-                integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
-                crossorigin="anonymous"></script>
+    <!--<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
 
 </body>
 

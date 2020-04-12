@@ -575,7 +575,10 @@ namespace accountmanager
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
            
-            string sqlSelect = "SELECT * FROM Reservations_mentoring WHERE rsvp = 'pending' AND email = '" 
+            string sqlSelect = "SELECT * FROM Reservations_mentoring " +
+                "              INNER JOIN Events_mentoring " +
+                "              ON Events_mentoring.eventID = Reservations_mentoring.eventID " +
+                "              WHERE rsvp = 'pending' AND email = '" 
                                + email + "' AND user_id = '" + userID + "';";
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
@@ -589,11 +592,17 @@ namespace accountmanager
             {
                 reservation.Add(new Reservation
                 {
-                    reservationID = Convert.ToInt32(sqlDt.Rows[i]["reservationID"]),
                     eventID = Convert.ToInt32(sqlDt.Rows[i]["eventID"]),
-                    userID = Convert.ToInt32(sqlDt.Rows[i]["user_id"]),
-                    email = sqlDt.Rows[i]["email"].ToString()
+                    eventName = sqlDt.Rows[i]["eventName"].ToString(),
+                    date = sqlDt.Rows[i]["date"].ToString(),
+                    location = sqlDt.Rows[i]["location"].ToString(),
+                    type = sqlDt.Rows[i]["type"].ToString(),
+                    description = sqlDt.Rows[i]["description"].ToString(),
 
+                    reservationID = Convert.ToInt32(sqlDt.Rows[i]["reservationID"]),
+                    email = sqlDt.Rows[i]["email"].ToString(),
+                    rsvp = sqlDt.Rows[i]["rsvp"].ToString(),
+                    userID = Convert.ToInt32(sqlDt.Rows[i]["user_id"]),
                 });
             }
             //convert the list of accounts to an array and return!
