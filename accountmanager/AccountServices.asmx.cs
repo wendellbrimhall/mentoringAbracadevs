@@ -563,6 +563,19 @@ namespace accountmanager
             return "Email Sent";
         }
 
+        [WebMethod(EnableSession = true)]
+        public bool CheckAdmin() { 
+            var surveycomplete = Convert.ToInt32(Session["admin"]);
+
+            if (surveycomplete == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
  }
 
