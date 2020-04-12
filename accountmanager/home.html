@@ -251,6 +251,93 @@
             $("#eventInfo").empty();
         }
 
+        function loadUserInvitedEvents() {
+            var webMethod = "ProjectServices.asmx/GetPendingReservation";
+            var parameters = "{}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    var data = array.d;
+
+                    console.log(data);
+
+                    for (var i = 0; i < data.length; i++) {
+
+                        var email = data[i].email;
+                        var userID = data[i].userID;
+                        var eventID = data[i].eventID;
+                        var reservationID = data[i].reservationID;
+
+                        var tableBody = $("#ev_table");
+
+                        var first = "<div class='cell' data-title='Attending'><button onclick='javascript: attendingEvent( " + eventID + ");'>Attending</button></div>";
+                        var second = first + "<div class='cell' data-title='notAttending'><button onclick='javascript: notAttendingEvent(" + eventID + ");'>Not Attending</button></div></div>";          
+
+                        console.log(second);
+                        tableBody.append(second);
+                    }
+                },
+                error: function (e) {
+                    alert("this code will only execute if javascript is unable to access the webservice");
+                }
+            });
+        }
+
+        function attendingEvent(id) {
+            var webMethod = "ProjectServices.asmx/AttendingEvent";
+            // update rsvp as "attending" in the DB
+
+            var parameters = { eventID: id};
+
+            var json_data = JSON.stringify(parameters)
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: json_data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function () {
+                    alert("Attending")
+                    location.reload();
+                },
+                error: function () {
+                    alert("something broke");
+                }
+            });
+        }
+
+        function notAttendingEvent(id) {
+            var webMethod = "ProjectServices.asmx/NotAttendingEvent";
+            // update rsvp as "not attending" in the DB
+            var parameters = {eventID: id };
+
+            var json_data = JSON.stringify(parameters)
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: json_data,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function () {
+                    alert("Not Attending")
+                    location.reload();
+                },
+                error: function () {
+                    alert("something broke");
+                }
+            });
+        }
+
     </script>
 
     <style>
@@ -275,7 +362,7 @@
 
 
 
-<body onload="javascript: loadReports();">
+<body onload="javascript: loadReports(), loadUserInvitedEvents();">
     <header class="header-bar mb-3">
         <div class="container d-flex flex-column flex-md-row align-items-center p-3">
             <h4 class="my-0 mr-md-auto font-weight-normal"><a href="/parking.html"
@@ -320,6 +407,12 @@
                 </div>
                 <div class="cell">
                     Sign Up
+                </div>
+                <div class="cell">
+                    Attending
+                </div>
+                <div>
+                    Not Attending
                 </div>
             </div>
 

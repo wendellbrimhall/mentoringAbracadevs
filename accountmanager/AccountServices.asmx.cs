@@ -563,6 +563,93 @@ namespace accountmanager
             return "Email Sent";
         }
 
+        [WebMethod(EnableSession = true)]
+        public Reservation[] GetPendingReservation()
+        {//LOGIC: get all pending reservation and return them!
+
+            var userID = Convert.ToInt32(Session["userID"]);
+            var email = Session["email"].ToString();
+
+            DataTable sqlDt = new DataTable("reservation");
+
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+           
+            string sqlSelect = "SELECT * FROM Reservations_mentoring WHERE rsvp = 'pending' AND email = '" 
+                               + email + "' AND user_id = '" + userID + "';";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            List<Reservation> reservation = new List<Reservation>();
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                reservation.Add(new Reservation
+                {
+                    reservationID = Convert.ToInt32(sqlDt.Rows[i]["reservationID"]),
+                    eventID = Convert.ToInt32(sqlDt.Rows[i]["eventID"]),
+                    userID = Convert.ToInt32(sqlDt.Rows[i]["user_id"]),
+                    email = sqlDt.Rows[i]["email"].ToString()
+
+                });
+            }
+            //convert the list of accounts to an array and return!
+            return reservation.ToArray();
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void AttendingEvent(int eventID)
+        {
+            var userID = Convert.ToInt32(Session["userID"]);
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //this is a simple update, with parameters to pass in values
+            string sqlSelect = "UPDATE Reservations_mentoring SET rsvp = 'attending' WHERE user_id = '"
+                              + userID + "' AND eventID = '" + eventID + "';";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlConnection.Open();
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+        }
+
+        [WebMethod(EnableSession = true)]
+        public void NotAttendingEvent(int eventID)
+        {
+            var userID = Convert.ToInt32(Session["userID"]);
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            //this is a simple update, with parameters to pass in values
+            string sqlSelect = "UPDATE Reservations_mentoring SET rsvp = 'not attending' WHERE user_id = '"
+                              + userID + "' AND eventID = '" + eventID + "';";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            //sqlCommand.Parameters.AddWithValue("@idValue", HttpUtility.UrlDecode(user_id));
+
+            sqlConnection.Open();
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+            }
+            sqlConnection.Close();
+        }
+
     }
  }
 

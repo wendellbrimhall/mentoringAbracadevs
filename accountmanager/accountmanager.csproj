@@ -105,11 +105,8 @@
     <Content Include="jquery.cleditor.min.js" />
     <Content Include="logOn.html" />
     <Content Include="questionnaireB.html" />
-
     <Content Include="table.css" />
-
     <Content Include="scripts\getData.js" />
-
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +116,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Reservation.cs" />
     <Compile Include="Eventz.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
