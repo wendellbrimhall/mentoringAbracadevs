@@ -1,15 +1,16 @@
 ﻿<!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Admin: View all account info</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"
-            integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0"
-            crossorigin="anonymous"></script>
+        integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0"
+        crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
     <link src="table.css" type="text/css" />
@@ -19,7 +20,7 @@
 
         var tableRowLength;
         var accountsArray; //variable that will store array of user information.
-       
+
 
         // this function display all account info
         async function loadAccounts() {
@@ -98,8 +99,8 @@
                     accountsArray = infoArray;
                 }
 
-                   
-                             
+
+
 
             });
         }
@@ -124,7 +125,7 @@
                 }
             });
 
-          
+
             userIDList.shift();
             mentorIDList.shift();
 
@@ -169,11 +170,10 @@
 </head>
 
 <style>
-
     #infoTableId {
         border: 1px solid black;
         background-color: sandybrown;
-        
+
     }
 
     #submitButtonId {
@@ -186,10 +186,9 @@
     .row-header {
         font-weight: 900;
         color: black;
-        border-bottom: 1px solid black
-
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
     }
-
 </style>
 
 <body onload="loadAccounts()">
@@ -214,10 +213,10 @@
 
     <div class="container py-md-9 container--wide">
         <div class="accountInfo">
-            <h3>User Information</h3>
+            <h3 style="justify-content">User Information</h3>
             <hr />
 
-            <table class="InfoTable" id="infoTableId">
+            <table class="table" id="infoTableId">
                 <tr>
                     <td class="row-header">User ID</td>
                     <td class="row-header">First Name</td>
@@ -231,7 +230,7 @@
                 </tr>
             </table>
 
-            <button id="submitButtonId" onclick="submitButton()">Submit</button>
+            <button id="submitButtonId" class="btn btn-primary btn-block" onclick="submitButton()">Submit</button>
         </div>
     </div>
 
@@ -242,4 +241,5 @@
     </footer>
 
 </body>
+
 </html>
