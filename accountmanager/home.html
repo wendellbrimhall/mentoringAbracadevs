@@ -171,9 +171,6 @@
 
             document.getElementById('mentorInfo').innerHTML = subjectInfo;
 
-
-
-
         }
 
 
@@ -235,23 +232,49 @@
         function showEventInfo(counter) {
             modal2.style.display = "block";
             var eventID = getEvents[counter].eventID;
+            var emailList = getEvents[counter].emailList;
+            var userList = getEvents[counter].userList;
 
             var eventString = "<div>Event:" + getEvents[counter].eventName + "</div>";
             eventString = eventString + "<div>Date: " + getEvents[counter].date + " </div>";
             eventString = eventString + "<div>Location: " + getEvents[counter].location + " </div>";
             eventString = eventString + "<div>Type of Event: " + getEvents[counter].type + " </div>";
             eventString = eventString + "<div>Description: " + getEvents[counter].description + " </div>";
-            eventString = eventString + "<div><input type='button' id='attendButton' value='Attend' onclick='attendButton(" + eventID + ")'></div>";
+            eventString = eventString + "<div><input type='button' id='attendButton' value='Attend' onclick='attendButton(" + eventID  + emailList + userList + ")'></div>";
+
 
             $("#eventInfo").append(eventString);
 
         }
 
-        function clearEventModal() {
-            $("#eventInfo").empty();
-        }
+        //my code
+        function attendButton(eventID, emailList, userList) {
+            var webMethod = "AccountServices.asmx/RecordInvite";
+            //console.log("SubmitEvent() started");
+            console.log("attendButton function running.");
+            var parameters =
+                "{eventID: '" + eventID + "', emailList: '" + emailList + "', userList: '" + userList + "'}";
 
-       
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var responseFromServer = msg.d;
+                    console.log(responseFromServer);
+                },
+                error: function (e) {
+                    var responseFromServer = e.d;
+                    alert(responseFromServer);
+                },
+            }); //end ajax post
+        }
+        //my code ends
+
+
 
     </script>
 

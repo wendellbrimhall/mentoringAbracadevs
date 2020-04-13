@@ -697,6 +697,70 @@ namespace accountmanager
             sqlConnection.Close();
         }
 
+        [WebMethod(EnableSession = true)]
+        public string AddSelectedEvent(string eventID, string emailList, string userList)
+        {
+            //LOGIC: get all pending reservation and return them!
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            string sqlSelect = "";
+            string[] split = emailList.Split(',');
+            string[] users = userList.Split(',');
+
+
+
+            for (int i = 0; i < split.Length; i++)
+            {
+                sqlSelect = sqlSelect + "INSERT INTO `abracadevs`.`Reservations_mentoring` (`eventID`, `email`, `user_id` ) VALUES('" + eventID + "', '" + split[i] + "', '" + users[i] + "');";
+            }
+
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlConnection.Open();
+            try
+            {
+
+                sqlCommand.ExecuteNonQuery();
+
+                return "Invitations recorded";
+
+            }
+            catch (Exception e)
+            {
+                var str = e.ToString();
+                return str;
+            }
+            sqlConnection.Close();
+        }
+
+        [WebMethod(EnableSession = true)]
+        public string CheckReservation(string eventID, string emailList, string userList)
+        {
+            var userID = Convert.ToInt32(Session["userID"]);
+            var email = Session["email"];
+
+            DataTable sqlDt = new DataTable("reservation");
+
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            string sqlSelect = "SELECT * FROM Reservations_mentoring " +
+                "              INNER JOIN Events_mentoring " +
+                "              ON Events_mentoring.eventID = Reservations_mentoring.eventID " +
+                "              WHERE rsvp  AND email = '"
+                               + email + "' AND user_id = '" + userID + "';";
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            return "Already Invited to this event";
+        } 
+           
+
     }
  }
 
