@@ -171,9 +171,6 @@
 
             document.getElementById('mentorInfo').innerHTML = subjectInfo;
 
-
-
-
         }
 
 
@@ -235,23 +232,49 @@
         function showEventInfo(counter) {
             modal2.style.display = "block";
             var eventID = getEvents[counter].eventID;
+            var emailList = getEvents[counter].emailList;
+            var userList = getEvents[counter].userList;
 
             var eventString = "<div>Event:" + getEvents[counter].eventName + "</div>";
             eventString = eventString + "<div>Date: " + getEvents[counter].date + " </div>";
             eventString = eventString + "<div>Location: " + getEvents[counter].location + " </div>";
             eventString = eventString + "<div>Type of Event: " + getEvents[counter].type + " </div>";
-            eventString = eventString + "<div>Descritpion: " + getEvents[counter].description + " </div>";
+            eventString = eventString + "<div>Description: " + getEvents[counter].description + " </div>";
             eventString = eventString + "<div><input type='button' id='attendButton' value='Attend' onclick='attendButton(" + eventID + ")'></div>";
+
 
             $("#eventInfo").append(eventString);
 
         }
 
-        function clearEventModal() {
-            $("#eventInfo").empty();
+        function attendButton(eventID) {
+            var webMethod = "AccountServices.asmx/CheckReservation";
+            console.log("attendButton function running.");
+            var parameters =
+                "{eventID: '" + eventID + "'}";
+
+            //jQuery ajax method
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (msg) {
+                    var responseFromServer = msg.d;
+                    console.log(responseFromServer);
+                    alert(responseFromServer);
+
+
+                },
+                error: function (e) {
+                    var responseFromServer = e.d;
+                    alert(responseFromServer);
+                },
+            }); //end ajax post
         }
 
-       
+
 
     </script>
 
@@ -277,11 +300,14 @@
 
 
 
-<body onload="javascript: loadReports(), loadUserInvitedEvents();">
+<body onload="javascript: loadReports()">
+    <!--, loadUserInvitedEvents();-->
     <header class="header-bar mb-3">
         <div class="container d-flex flex-column flex-md-row align-items-center p-3">
-            <h4 class="my-0 mr-md-auto font-weight-normal"><a href="/parking.html"
-                    class="text-white">AbracaMentoring</a></h4>
+            <h4 class="my-0 mr-md-auto font-weight-normal">
+                <a href="/parking.html"
+                   class="text-white">AbracaMentoring</a>
+            </h4>
             <div class="flex-row my-3 my-md-0">
                 <a class="btn btn-sm btn-success mr-2" href="createEvent.html">Create Event</a>
                 <a class="btn btn-sm btn-success mr-2" href="admin.html">Admin</a>
@@ -376,12 +402,12 @@
             }
 
 
-            .close:hover,
-            .close:focus {
-                color: black;
-                text-decoration: none;
-                cursor: pointer;
-            }
+                .close:hover,
+                .close:focus {
+                    color: black;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
         </style>
 
 
@@ -446,8 +472,10 @@
         <br />
 
         <footer class="border-top text-center small text-muted py-3">
-            <p class="m-0">Copyright &copy; 2020 <a href="/" class="text-muted">AbracaMentoring</a>. All rights
-                reserved.</p>
+            <p class="m-0">
+                Copyright &copy; 2020 <a href="/" class="text-muted">AbracaMentoring</a>. All rights
+                reserved.
+            </p>
         </footer>
 
 
