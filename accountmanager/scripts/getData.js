@@ -2,6 +2,7 @@
 var getEvents;
 var getCurrentUser;
 
+
 function getAllUsers() {
     
 
@@ -77,3 +78,4 @@ function getCurrentUserData() {
         }
     });
 }
+
