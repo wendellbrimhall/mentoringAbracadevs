@@ -27,7 +27,17 @@
         var mentorEmail;
         var mentorFirst;
         var mentorLast;
+        var getReservations;
 
+        $(document).ready(function () {
+
+            //getCurrentUserData(); // this stores the current users data in an array called getCurrentUser. This calls session data, so if it is uncommented, it was cause an error if you do not login first.
+            getAllUsers(); // This will store all user data in array called getUsers 
+
+            //getAllEvents(); // This will store all event data in array called getEvents
+
+
+        });
 
 
         $(document).ready(function () {
@@ -180,6 +190,7 @@
 
         function loadReports() {
 
+
             var webMethod = "AccountServices.asmx/ViewEvents";
             console.log('Function started');
             var parameters = "{}";
@@ -209,6 +220,8 @@
 
                             // variables will store the user_id and email address of each row, and place that data in the button function
 
+                        
+
                             var tableBody = $("#ev_table");
 
                             var first = "<div class='row'><div class='cell' data-title='First'>" + data[i].eventID + "</div>";
@@ -224,7 +237,7 @@
                     }
 
                     getEvents = data;
-
+                    
                 },
                 error: function (e) {
                     alert("this code will only execute if javascript is unable to access the webservice");
@@ -238,14 +251,30 @@
             var eventID = getEvents[counter].eventID;
             var emailList = getEvents[counter].emailList;
             var userList = getEvents[counter].userList;
+            var alreadyInvited = false;
+
+
+            for (var i = 0; i < getReservations.length; i++) {
+                if (getReservations[i].eventID == eventID) {
+                    if (getReservations[i].userID == getCurrentUser[0].userID) {
+                        alreadyInvited = true;
+                        console.log(alreadyInvited);
+                    }
+                }
+            }
 
             var eventString = "<div>Event:" + getEvents[counter].eventName + "</div>";
             eventString = eventString + "<div>Date: " + getEvents[counter].date + " </div>";
             eventString = eventString + "<div>Location: " + getEvents[counter].location + " </div>";
             eventString = eventString + "<div>Type of Event: " + getEvents[counter].type + " </div>";
             eventString = eventString + "<div>Description: " + getEvents[counter].description + " </div>";
-            eventString = eventString + "<div><input type='button' id='attendButton' value='Attend' onclick='attendButton(" + eventID + ")'></div>";
 
+            if (alreadyInvited == true) {
+                eventString = eventString + "<div><p>You've already been invited to this event</p></div>";
+
+            } else {
+                eventString = eventString + "<div><input type='button' id='attendButton' value='Attend' onclick='attendButton(" + eventID + ")'></div>";
+            }
 
             $("#eventInfo").append(eventString);
 
@@ -284,6 +313,26 @@
             $('#eventInfo').empty()
         }
 
+
+        function getListOfRes() {
+            var webMethod = "AccountServices.asmx/GetReservationData";
+            var parameters = "{}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    console.log('Function started');
+                    console.log(array);
+
+                    getReservations = array.d;
+
+                }
+            });
+        }
 
     </script>
 
@@ -494,17 +543,18 @@
 
 <script>
 
-
     $(document).ready(function () {
 
+        getListOfRes();
         getCurrentUserData(); // this stores the current users data in an array called getCurrentUser. This calls session data, so if it is uncommented, it was cause an error if you do not login first.
         getAllUsers(); // This will store all user data in array called getUsers 
+        
         //getAllEvents(); // This will store all event data in array called getEvents
 
 
     });
 
+    </script>
 
-</script>
 
 </html>

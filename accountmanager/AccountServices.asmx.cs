@@ -747,6 +747,40 @@ namespace accountmanager
 
         }
 
+        [WebMethod]
+        public Reservation[] GetReservationData()
+        {
+            
+            DataTable sqlDt = new DataTable("reservation");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            string sqlSelect = "SELECT * FROM Reservations_mentoring;"; 
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            List<Reservation> reservation = new List<Reservation>();
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                reservation.Add(new Reservation
+                {
+                    eventID = Convert.ToInt32(sqlDt.Rows[i]["eventID"]),                    
+                    reservationID = Convert.ToInt32(sqlDt.Rows[i]["reservationID"]),
+                    email = sqlDt.Rows[i]["email"].ToString(),
+                    rsvp = sqlDt.Rows[i]["rsvp"].ToString(),
+                    userID = Convert.ToInt32(sqlDt.Rows[i]["user_id"]),
+                });
+            }
+            //convert the list of accounts to an array and return!
+            return reservation.ToArray();
+
+
+        }
+
 
 
 
