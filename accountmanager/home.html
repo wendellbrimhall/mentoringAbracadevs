@@ -115,6 +115,10 @@
 
         });
 
+        function clearEventModal() {
+            $("#eventInfo").html("");
+        }
+
 
         function clearEmailModal() {
             var editor = $("#editor").cleditor(options)[0];
@@ -262,9 +266,10 @@
                 dataType: "json",
                 success: function (msg) {
                     var responseFromServer = msg.d;
-                    console.log(responseFromServer);
-                    alert(responseFromServer);
 
+                       // document.getElementById('attendButton').style.visibility = 'hidden';
+                        console.log(responseFromServer);
+                        alert(responseFromServer);
 
                 },
                 error: function (e) {
