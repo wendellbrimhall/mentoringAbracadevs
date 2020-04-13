@@ -264,6 +264,8 @@
                     var responseFromServer = msg.d;
                     console.log(responseFromServer);
                     alert(responseFromServer);
+                    clearEventModal();
+
 
 
                 },
@@ -274,6 +276,10 @@
             }); //end ajax post
         }
 
+        function clearEventModal() {
+            modal2.style.display = "none";
+            $('#eventInfo').empty()
+        }
 
 
     </script>
