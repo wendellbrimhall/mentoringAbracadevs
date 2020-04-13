@@ -298,7 +298,9 @@
 
                        // document.getElementById('attendButton').style.visibility = 'hidden';
                         console.log(responseFromServer);
-                        alert(responseFromServer);
+                    alert(responseFromServer);
+                    getListOfRes();
+                    clearEventModal();
 
                 },
                 error: function (e) {

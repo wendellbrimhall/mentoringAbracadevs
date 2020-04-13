@@ -714,36 +714,35 @@ namespace accountmanager
 
         [WebMethod(EnableSession = true)]
         public string CheckReservation(string eventID)
+
+
         {
 
             var email = Session["email"].ToString();
-            var userID = Convert.ToInt32(Session["userID"]);
-
-            //logic: checks if event user has already been invited to event 
-            DataTable sqlDt = new DataTable();
+            var userID = Session["userID"].ToString();
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-            string sqlSelect = "SELECT * FROM Reservations_mentoring " +
-           "              INNER JOIN Events_mentoring " +
-           "              ON Events_mentoring.eventID = Reservations_mentoring.eventID " +
-           "              WHERE Events_mentoring.eventID = '" + Convert.ToInt32(eventID) + "' AND email = '" + email + "' AND user_id = '" + userID + "';";
-
+            string sqlSelect = "INSERT INTO `abracadevs`.`Reservations_mentoring` (`eventID`, `email`, `user_id` ) VALUES('" + eventID + "', '" + email + "', '" + userID + "'); ";
+           
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
 
-            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
-            sqlDa.Fill(sqlDt);
+            sqlConnection.Open();
+            try
+            {
 
-            if (sqlDt.Rows.Count > 0)
-            {
-                return "Already Invited";
+                sqlCommand.ExecuteNonQuery();
+
+                return "Invitations recorded";
+
             }
-            else
+            catch (Exception e)
             {
-                RecordInvite(eventID, Session["email"].ToString(), Session["userId"].ToString());
-                return "Reservation Created.";
-            }  
+                var str = e.ToString();
+                return str;
+            }
+            sqlConnection.Close();
 
         }
 
