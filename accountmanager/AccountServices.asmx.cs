@@ -602,6 +602,20 @@ namespace accountmanager
         }
 
         [WebMethod(EnableSession = true)]
+
+        public bool CheckAdmin() { 
+            var surveycomplete = Convert.ToInt32(Session["admin"]);
+
+            if (surveycomplete == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public Reservation[] GetPendingReservation()
         {//LOGIC: get all pending reservation and return them!
 
