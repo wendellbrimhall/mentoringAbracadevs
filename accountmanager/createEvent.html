@@ -499,21 +499,26 @@
             <h2>Search results</h2>
             <hr />
             <br />
-            <table class="InfoTable" id="infoTableId">
-                <tr>
-                    <th>User ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Employee ID</th>
-                    <th>Email Address</th>
-                    <th>Department</th>
-                    <th>Position</th>
-                    <th>Status</th>
-                </tr>
+            <table class="table" id="infoTableId">
+                    <tr>
+                        <th>User ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Employee ID</th>
+                        <th>Email Address</th>
+                        <th>Department</th>
+                        <th>Position</th>
+                        <th>Status</th>
+                    </tr>
             </table>
         </div>
         </div>
         <style>
+            .table {
+                border: 1px solid black;
+                background-color: sandybrown;
+            }
+
             .modal {
                 display: none; /* Hidden by default */
                 position: fixed; /* Stay in place */
@@ -555,6 +560,7 @@
         <div id="myModal" class="modal">
 
             <!-- Modal content -->
+            <div class="container py-md-5 container--narrow">
             <div class="modal-content">
                 <span id="xbutton" class="close">&times;</span>
                 <h3>Create New Event</h3>
@@ -573,7 +579,7 @@
                     </span>
                     <br />
                     <span>
-                        <Label>location</Label>
+                        <Label>Location</Label>
                         <input name="location" id="eventLocation" type="text"
                                placeholder="Enter Location" autocomplete="off" required />
                     </span>
@@ -607,6 +613,7 @@
 
 
 
+            </div>
             </div>
 
         </div>
