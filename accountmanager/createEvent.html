@@ -89,7 +89,13 @@
             userIDstr = userIDList.toString();
             inviteStr = inviteList.toString();
             console.log(inviteStr);
-         
+
+
+            console.log($("#eventName").val());
+            console.log($("#eventDate").val());
+            console.log($("#eventLocation").val());
+            console.log($("#eventType").val());
+            console.log($("#eventDescription").val());
 
             var webMethod = "AccountServices.asmx/NewEvent";
           
@@ -106,6 +112,7 @@
                 $("#eventDescription").val() +
                 "'}";
 
+            console.log(parameters);
            //jQuery ajax method
             $.ajax({
                 type: "POST",

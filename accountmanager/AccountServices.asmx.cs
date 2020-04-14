@@ -616,11 +616,12 @@ namespace accountmanager
             }
         }
 
+        [WebMethod(EnableSession = true)]
         public Reservation[] GetPendingReservation()
         {//LOGIC: get all pending reservation and return them!
 
             var userID = Convert.ToInt32(Session["userID"]);
-            var email = Session["email"].ToString();
+            
 
             DataTable sqlDt = new DataTable("reservation");
 
@@ -630,8 +631,7 @@ namespace accountmanager
             string sqlSelect = "SELECT * FROM Reservations_mentoring " +
                 "              INNER JOIN Events_mentoring " +
                 "              ON Events_mentoring.eventID = Reservations_mentoring.eventID " +
-                "              WHERE rsvp = 'pending' AND email = '" 
-                               + email + "' AND user_id = '" + userID + "';";
+                "              WHERE rsvp = 'pending' AND user_id = '" + userID + "';";
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
             MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
