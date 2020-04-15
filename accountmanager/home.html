@@ -421,6 +421,17 @@
 
 
         <style>
+            #eventInfo input[type=button]{
+                border-radius: 25px;
+                padding-left: 50px;
+                padding-right:50px;
+                background-color: lightgoldenrodyellow;
+            }
+
+            .eventInfo{
+                display: inline-block;
+            }
+
             .modal {
                 display: none;
                 /* Hidden by default */
@@ -444,7 +455,10 @@
 
             /* Modal Content/Box */
             .modal-content {
-                background-color: #fefefe;
+                display: block;
+                text-align:center;
+                font-weight: 900;
+                background-color: lightcyan;
                 margin: 15% auto;
                 /* 15% from the top and centered */
                 padding: 20px;
@@ -470,76 +484,75 @@
                 }
         </style>
 
-
         <div id="myModal" class="modal">
 
             <!-- Modal content -->
-            <div class="modal-content">
-                <span id="xbutton" class="close">&times;</span>
+                <div class="modal-content">
+                    <span id="xbutton" class="close">&times;</span>
 
-                <h3>Email Mentor</h3>
-                <p id="mentorInfo"></p>
-                <span>
-                    <Label>Subject:</Label>
-                    <input name="subject" id="subjectId" type="text" autocomplete="off" />
-                </span>
-
-
-                <div>
-                    <textarea id="editor" rows="0" cols="0"></textarea>
-                </div>
+                    <h3>Email Mentor</h3>
+                    <p id="mentorInfo"></p>
+                    <span>
+                        <Label>Subject:</Label>
+                        <input name="subject" id="subjectId" type="text" autocomplete="off" />
+                    </span>
 
 
-                <input type="button" id="send" value="Send">
-                <input type="button" id="btnClear" value="Cancel">
+                    <div>
+                        <textarea id="editor" rows="0" cols="0"></textarea>
+                    </div>
 
 
+                    <input type="button" id="send" value="Send">
+                    <input type="button" id="btnClear" value="Cancel">
 
-            </div>
 
-        </div>
-
-        <div id="myModal2" class="modal">
-
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span id="xbutton2" class="close">&times;</span>
-                <div id="eventInfo">
 
                 </div>
 
-
-
-
             </div>
 
+        <div class="container py-md-5 container--narrow">
+            <div id="myModal2" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span id="xbutton2" class="close">&times;</span>
+                    
+                        <div id="eventInfo">
+
+                        </div>
+
+                    </div>
+
+            </div>
+            
+
+
+            <script>
+                var cls = document.getElementById("xbutton2");
+
+                cls.onclick = function () {
+                    modal2.style.display = "none";
+                    clearEventModal();
+                }
+
+
+            </script>
+
+
+            <br />
+            <br />
+
+            <footer class="border-top text-center small text-muted py-3">
+                <p class="m-0">
+                    Copyright &copy; 2020 <a href="/" class="text-muted">AbracaMentoring</a>. All rights
+                    reserved.
+                </p>
+            </footer>
+
+
         </div>
-
-
-        <script>
-            var cls = document.getElementById("xbutton2");
-
-            cls.onclick = function () {
-                modal2.style.display = "none";
-                clearEventModal();
-            }
-
-
-        </script>
-
-
-        <br />
-        <br />
-
-        <footer class="border-top text-center small text-muted py-3">
-            <p class="m-0">
-                Copyright &copy; 2020 <a href="/" class="text-muted">AbracaMentoring</a>. All rights
-                reserved.
-            </p>
-        </footer>
-
-
-    </div>
 
 </body>
 
