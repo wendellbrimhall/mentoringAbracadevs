@@ -224,15 +224,15 @@
 
                             var tableBody = $("#ev_table");
 
-                            var first = "<div class='row'><div class='cell' data-title='First'>" + data[i].eventID + "</div>";
-                            var second = first + "<div class='cell' data-title='date'> " + data[i].eventName + "</div>";
-                            var third = second + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
-                            var fourth = third + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
-                            var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
-                            var sixth = fifth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
-                            var seventh = sixth + "<div class='cell' data-title='text'><a   href='javascript: void (0)';  onclick='showEventInfo(" + i + ");' >View Event Info</a></div>"
+                            var first = "<div class='row'><div class='cell' data-title='date'> " + data[i].eventName + "</div>";
+                            var second = first + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
+                            var third = second + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
+                            var fourth = third + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
+                            var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
+                            var sixth = fifth + "<div class='cell' data-title='text'><a   href='javascript: void (0)';  onclick='showEventInfo(" + i + ");' >View Event Info</a></div>"
 
-                            tableBody.append(seventh);
+                            tableBody.append(sixth);
+
                         }
                     }
 
@@ -388,9 +388,6 @@
         <div class="table" id="ev_table" margin: 0px; margin-bottom: 0rem;>
 
             <div class="row header blue">
-                <div class="cell">
-                    Event ID
-                </div>
                 <div class="cell">
                     Event Name
                 </div>
