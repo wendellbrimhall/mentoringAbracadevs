@@ -7,19 +7,33 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Admin: View all account info</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"
-        integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0"
-        crossorigin="anonymous"></script>
+            integrity="sha384-GqVMZRt5Gn7tB9D9q7ONtcp4gtHIUEW/yG7h98J7IpE3kpi+srfFyyB/04OV6pG0"
+            crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
     <link src="table.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="table.css">
+    <link rel="stylesheet" href="https://formden.com/static/cdn/bootstrap-iso.css" />
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script type="text/javascript">
 
         var tableRowLength;
         var accountsArray; //variable that will store array of user information.
+        var modal2;
+        var getReservations;
+
+        $(document).ready(function () {
+            var options = {
+                width: 480,
+                height: 300
+            }
+            modal2 = document.getElementById("myModal2");
+        });
+
 
 
         // this function display all account info
@@ -98,10 +112,6 @@
 
                     accountsArray = infoArray;
                 }
-
-
-
-
             });
         }
 
@@ -166,18 +176,68 @@
                 }
             });
         }
+
+        function loadReports() {
+
+            var webMethod = "AccountServices.asmx/ViewEvents";
+            console.log('Function started');
+            var parameters = "{}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+
+                    console.log(array);
+                    var data = array.d;
+                    console.log(data);
+
+                    var tableBody = $("#ev_table");
+
+                    console.log(data);
+                    for (var i = 0; i < data.length; i++) {
+                        for (var i = 0; i < data.length; i++) {
+                            //This loop goes through each user with pending status and adds their first, last and email to a table
+                            //It will also dynamically add an approve and deny button to each row.
+                            var findRep = data[i].report_id;
+
+                            // variables will store the user_id and email address of each row, and place that data in the button function
+
+                            var tableBody = $("#ev_table");
+
+                            var first = "<div class='row'><div class='cell' data-title='First'>" + data[i].eventName + "</div>";
+                            var second = first + "<div class='cell' data-title='date'> " + data[i].date + "</div>";
+                            var third = second + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
+                            var fourth = third + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
+                            var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
+                            var sixth = fifth + "<div class='cell' data-title='text'><a href='javascript: void (0)';  onclick='showEventInfo(" + i + ");' >View Event Info</a></div>";
+                            var seventh = sixth + "<div class='cell' data-title='text'><a href='javascript: void (0)';  onclick='' >View Invited/ Attending Users</a></div>"
+                            var eighth = seventh + "<div class='cell' data-title='text'><a href='javascript: void (0)';  onclick='' >View Feedback</a></div>"
+                            tableBody.append(eighth);
+                        }
+                    }
+                    getEvents = data;
+                },
+                error: function (e) {
+                    alert("this code will only execute if javascript is unable to access the webservice");
+                }
+            });
+        }
     </script>
 </head>
 
 <style>
-    #submitButtonId{
+    #submitButtonId {
         color: black;
-        margin-left:30px;
+        margin-left: 30px;
     }
+
     #infoTableId {
         border: 1px solid black;
         background-color: sandybrown;
-
     }
 
     #submitButtonId {
@@ -195,7 +255,8 @@
     }
 </style>
 
-<body onload="loadAccounts()">
+<body onload="loadAccounts(), loadReports()">
+    <!--, loadReports()-->
 
     <header class="header-bar mb-3">
         <div class="container d-flex flex-column flex-md-row align-items-center p-3">
@@ -236,8 +297,45 @@
 
             <button id="submitButtonId" class="btn btn-primary btn-block" onclick="submitButton()">Submit</button>
         </div>
+
+        <hr />
     </div>
 
+
+    <!--displaying events with event info, invited/ attending users, and feedback-->
+    <div class="container py-md-5 container--narrow">
+        <h4>Upcoming Events</h4>
+        <div class="table" id="ev_table" margin: 0px; margin-bottom: 0rem;>
+            <div class="row header blue">
+
+                <div class="cell">
+                    Event Name
+                </div>
+                <div class="cell">
+                    Date
+                </div>
+                <div class="cell">
+                    Location
+                </div>
+                <div class="cell">
+                    Type
+                </div>
+                <div class="cell">
+                    Description
+                </div>
+                <div class="cell">
+                    Event Info
+                </div>
+                <div class="cell">
+                    Invited/ Attending Users
+                 </div>
+                <div class="cell">
+                    Feedback
+                </div>
+            </div>
+
+        </div>
+    </div>
     <br>
 
     <footer class="border-top text-center small text-muted py-3">
