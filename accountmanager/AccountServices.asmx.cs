@@ -776,11 +776,39 @@ namespace accountmanager
             }
             //convert the list of accounts to an array and return!
             return reservation.ToArray();
-
-
         }
 
 
+        [WebMethod(EnableSession = true)]
+        public string AddFeedback(string resID, string text)
+        {
+
+            var userID = Session["userID"].ToString();
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+            string sqlSelect = "INSERT INTO `abracadevs`.`Feedback_mentoring` (`user_id`, `reservation_ID`, `text` ) VALUES('" + userID + "', '" + resID + "', '" + text + "'); ";
+
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            sqlConnection.Open();
+            try
+            {
+
+                sqlCommand.ExecuteNonQuery();
+
+                return "success";
+
+            }
+            catch (Exception e)
+            {
+                var str = e.ToString();
+                return str;
+            }
+            sqlConnection.Close();
+
+        }
 
 
 
