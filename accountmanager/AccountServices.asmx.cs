@@ -780,13 +780,13 @@ namespace accountmanager
 
 
         [WebMethod(EnableSession = true)]
-        public string AddFeedback(string resID, string text)
+        public string AddFeedback(string eventID, string text)
         {
 
             var userID = Session["userID"].ToString();
 
             string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
-            string sqlSelect = "INSERT INTO `abracadevs`.`Feedback_mentoring` (`user_id`, `reservation_ID`, `text` ) VALUES('" + userID + "', '" + resID + "', '" + text + "'); ";
+            string sqlSelect = "INSERT INTO `abracadevs`.`Feedback_mentoring` (`user_id`, `event_id`, `text` ) VALUES('" + userID + "', '" + eventID + "', '" + text + "'); ";
 
 
             MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);

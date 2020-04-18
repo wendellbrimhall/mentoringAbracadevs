@@ -25,6 +25,7 @@
     <script type="text/javascript">
 
         var infoArray;
+        var getReservations;
 
         // this function grabs and display account info
         function LoadInfo() {
@@ -134,13 +135,15 @@
 
                             var tableBody = $("#ev_table");
 
-                            var first = "<div class='row'><div class='cell' data-title='First'>" + data[i].eventID + "</div>";
+                            userEventID = data[i].eventID;
+
+                            var first = "<div class='row'><div class='cell' data-title='First'>" + userEventID + "</div>";
                             var second = first + "<div class='cell' data-title='date'> " + data[i].eventName + "</div>";
                             var third = second + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
                             var fourth = third + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
                             var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
                             var sixth = fifth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
-                            var seventh = sixth + "<div class='cell' data-title='text'><a   href='javascript: void (0)';  onclick='' >Leave Feedback</a></div>"
+                            var seventh = sixth + "<div class='cell' data-title='text'><a   href='javascript: void (0)';  onclick='Feedback(userEventID)'" + ">Leave Feedback</a></div>"
 
                             tableBody.append(seventh);
                         }
@@ -204,6 +207,49 @@
                 }
             });
         }
+
+
+
+        function Feedback(event_id) {
+            // This function is called when the user presses the Leave Feedback next to a reservation in the attended events. It allows the user to enter their feedback then calls a webmethod to 
+            //store their input in the database.
+
+            var feedback = prompt("Please enter your Feedback.");
+
+            console.log(event_id);
+            console.log(feedback);
+
+            if (feedback != null) {
+
+                $("#" + event_id + "").prop('disabled', true);
+
+                var webMethod = "AccountServices.asmx/AddFeedback";
+                var parameters = { eventID: event_id, text: feedback };
+
+                var json_data = JSON.stringify(parameters)
+
+
+                //jQuery ajax method
+                $.ajax({
+                    type: "POST",
+                    url: webMethod,
+                    data: json_data,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function () {
+                        alert(" Feedback recorded");
+
+
+                    },
+                    error: function () {
+                        alert("something broke");
+                    }
+
+                });
+            }
+
+        }
+
     </script>
 </head>
 
@@ -333,13 +379,6 @@
         </div>
         <br />
     </div>
-
-
-
-
-
-
-
 
 
 
