@@ -11,6 +11,10 @@ body, .tooltip
   max-width: 732px;
 }
 
+.container--normal {
+    max-width: 1200px;
+}
+
 .header-search-icon {
   position: relative;
   top: 3px;

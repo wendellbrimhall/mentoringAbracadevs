@@ -423,10 +423,82 @@
 
 
 <body onload="initialize()">
+    <style>
 
-    <div class="container py-md-9 container--narrow">
-        <div>
-            <label for="q1">When are you most available?</label>
+        .row::after {
+            content: "";
+            clear: both;
+            display: block;
+        }
+
+        .questions {
+            float: left;
+            box-sizing: border-box;
+        }
+
+        select {
+            width: 150px;
+        }
+            #buttons {
+            float: right;
+            clear: both;
+        }
+
+        .col-01 {
+            width: 8.33%;
+        }
+
+        .col-02 {
+            width: 20%;
+            padding: 5px;
+        }
+
+        .col-03 {
+            width: 25.00%;
+        }
+
+        .col-04 {
+            width: 33.33%;
+        }
+
+        .col-05 {
+            width: 41.66%;
+        }
+
+        .col-06 {
+            width: 50.00%;
+        }
+
+        .col-07 {
+            width: 58.33%;
+        }
+
+        .col-08 {
+            width: 66.66%;
+        }
+
+        .col-09 {
+            width: 75.00%;
+        }
+
+        .col-10 {
+            width: 83.33%;
+        }
+
+        .col-11 {
+            width: 91.66%;
+        }
+
+        .col-12 {
+            width: 100.00%;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+
+    <div class="container py-md-9 container--normal">
+        <div class="col-02 questions">
+            <label for="q1">Availability</label>
             <br />
             <select id="q1">
                 <option value="-">-</option>
@@ -435,10 +507,10 @@
                 <option value="Weeknights">Weeknights</option>
             </select>
         </div>
-        <br />
 
-        <div>
-            <label for="q2">Do you like to drink?</label>
+
+        <div class="col-02 questions">
+            <label for="q2">Drinking</label>
             <br />
             <select id="q2">
                 <option value="-">-</option>
@@ -446,11 +518,11 @@
                 <option value="No">No</option>
             </select>
         </div>
-        <br />
 
 
-        <div>
-            <label for="q3">What are your favorite type of foods?</label>
+
+        <div class="col-02 questions">
+            <label for="q3">Food</label>
             <br />
             <select id="q3">
                 <option value="-">-</option>
@@ -462,10 +534,10 @@
                 <option value="Chinese">Chinese</option>
             </select>
         </div>
-        <br />
 
-        <div>
-            <label for="q4">What are your favorite sports?</label>
+
+        <div class="col-02 questions">
+            <label for="q4">Sports</label>
             <br />
             <select id="q4">
                 <option value="-">-</option>
@@ -475,12 +547,12 @@
                 <option value="Hockey">Hockey</option>
             </select>
         </div>
-        <br />
 
-        <div>
-            <label for="q5">What type of outdoor activities do you enjoy?</label>
+
+        <div class="col-02 questions">
+            <label for="q5">Outdoors</label>
             <br />
-            <select id="q5">
+            <select id="q5" width="50">
                 <option value="-">-</option>
                 <option value="Hiking">Hiking</option>
                 <option value="Biking">Biking</option>
@@ -489,24 +561,31 @@
                 <option value="Camping">Camping</option>
             </select>
         </div>
+
+
         <br />
 
-        <div>
-            <button id="search" onclick="search()">Submit</button>
+        <div class="row">
+            <div class="col-12">
+                <span>
+                <button id="search" onclick="search()">Submit</button>
+
+                <div id="createEventButton">
+
+                </div>
+                    </span>
+            </div>
         </div>
-        <div id="createEventButton">
-
         </div>
-    </div>
 
-    <br />
+        <br />
 
-    <div class="container py-md-9 container--narrow">
-        <div class="accountInfo">
-            <h2>Search results</h2>
-            <hr />
-            <br />
-            <table class="table" id="infoTableId">
+        <div class="container py-md-9 container--narrow">
+            <div class="accountInfo">
+                <h2>Search results</h2>
+                <hr />
+                <br />
+                <table class="table" id="infoTableId">
                     <tr>
                         <th>User ID</th>
                         <th>First Name</th>
@@ -517,8 +596,8 @@
                         <th>Position</th>
                         <th>Status</th>
                     </tr>
-            </table>
-        </div>
+                </table>
+            </div>
         </div>
         <style>
             .table {
@@ -568,59 +647,59 @@
 
             <!-- Modal content -->
             <div class="container py-md-5 container--narrow">
-            <div class="modal-content">
-                <span id="xbutton" class="close">&times;</span>
-                <h3>Create New Event</h3>
-                <br />
-                <form id="event_data">
-                    <span>
-                        <Label>Event Name</Label>
-                        <input name="eventName" id="eventName" type="text"
-                               placeholder="Event Name" autocomplete="off" required />
-                    </span>
+                <div class="modal-content">
+                    <span id="xbutton" class="close">&times;</span>
+                    <h3>Create New Event</h3>
                     <br />
-                    <span>
-                        <Label>Date</Label>
-                        <input name="eventDate" id="eventDate" type="text"
-                               placeholder="YYYY/MM/DD" autocomplete="off" required />
-                    </span>
-                    <br />
-                    <span>
-                        <Label>Location</Label>
-                        <input name="location" id="eventLocation" type="text"
-                               placeholder="Enter Location" autocomplete="off" required />
-                    </span>
-                    <br />
-                    <span>
-                        <label for="type-register">Type</label>
-                        <select id="eventType">
-                            <option value="Meal">Meal</option>
-                            <option value="Sporting">Sporting</option>
-                            <option value="Outdoors">Outdoors</option>
-                        </select>
-                    </span>
-                    <br />
+                    <form id="event_data">
+                        <span>
+                            <Label>Event Name</Label>
+                            <input name="eventName" id="eventName" type="text"
+                                   placeholder="Event Name" autocomplete="off" required />
+                        </span>
+                        <br />
+                        <span>
+                            <Label>Date</Label>
+                            <input name="eventDate" id="eventDate" type="text"
+                                   placeholder="YYYY/MM/DD" autocomplete="off" required />
+                        </span>
+                        <br />
+                        <span>
+                            <Label>Location</Label>
+                            <input name="location" id="eventLocation" type="text"
+                                   placeholder="Enter Location" autocomplete="off" required />
+                        </span>
+                        <br />
+                        <span>
+                            <label for="type-register">Type</label>
+                            <select id="eventType">
+                                <option value="Meal">Meal</option>
+                                <option value="Sporting">Sporting</option>
+                                <option value="Outdoors">Outdoors</option>
+                            </select>
+                        </span>
+                        <br />
 
 
-                    <span>
-                        <Label>Description</Label>
-                        <textarea name="textarea" style="width:250px;height:50px;" id="eventDescription"></textarea>
-                    </span>
-                    <br />
-                    <Label>Invite:</Label>
-                    <div id="addAttendeeList">
+                        <span>
+                            <Label>Description</Label>
+                            <textarea name="textarea" style="width:250px;height:50px;" id="eventDescription"></textarea>
+                        </span>
+                        <br />
+                        <Label>Invite:</Label>
+                        <div id="addAttendeeList">
 
-                    </div>
-
-
-                </form>
-
-                <input type="button" onclick="submitEvent()" value="Create">
-                <input type="button" onclick="clearForm()" value="Cancel">
+                        </div>
 
 
+                    </form>
+                    
+                        <input type="button" onclick="submitEvent()" value="Create">
+                        <input type="button" onclick="clearForm()" value="Cancel">
+                    
 
-            </div>
+
+                </div>
             </div>
 
         </div>
@@ -640,13 +719,13 @@
             }
 
 
-        $(document).ready(function () {           
-           
-            getAllUsers();
-            getAllEvents();
-            //getCurrentUserData();
-        });
-        
+            $(document).ready(function () {
+
+                getAllUsers();
+                getAllEvents();
+                //getCurrentUserData();
+            });
+
 
 
         </script>
