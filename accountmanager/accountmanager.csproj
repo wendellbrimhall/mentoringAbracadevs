@@ -116,6 +116,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Feedback.cs" />
     <Compile Include="Reservation.cs" />
     <Compile Include="Eventz.cs" />
     <Compile Include="Global.asax.cs">

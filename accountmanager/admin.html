@@ -27,6 +27,7 @@
         var tableRowLength;
         var accountsArray; //variable that will store array of user information.
         var getReservations;
+        var getFeedback;
         var modal;
         var modal2;
 
@@ -216,14 +217,15 @@
                             var second = first + "<div class='cell' data-title='date'> " + data[i].date + "</div>";
                             var third = second + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
                             var fourth = third + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
-                            var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
-                            var sixth = fifth + "<div class='cell' data-title='text'><a href='javascript: void (0)';  onclick='showEventInfo(" + i + ");' >View Event Info</a></div>";
-                            var seventh = sixth + "<div class='cell' data-title='text'><a href='javascript: void (0)';  onclick='' >View Invited/ Attending Users</a></div>"
-                            var eighth = seventh + "<div class='cell' data-title='text'><a href='javascript: void (0)';  onclick='' >View Feedback</a></div>"
+                            var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";                          
+                            var seventh = fifth + "<div class='cell' data-title='text'><a href='javascript: void (0)';  onclick='viewUsers(" + data[i].eventID + ")' >View Invited/ Attending Users</a></div>";
+                            var eighth = seventh + "<div class='cell' data-title='text'><a href='javascript: void (0)';  onclick='viewFeedback(" + data[i].eventID + ")' >View Feedback</a></div>"
                             tableBody.append(eighth);
                         }
                     }
                     getEvents = data;
+                    getFeedback();
+                    getListOfRes();
                 },
                 error: function (e) {
                     alert("this code will only execute if javascript is unable to access the webservice");
@@ -316,13 +318,21 @@
 
             });
 
+            $('#xbutton2').click(function (e) {
+
+                clearEventModal();
+
+            });
+
+            
+
 
         });
 
 
         function sendEmail() {
             modal.style.display = "block";
-            var subjectInfo;
+          
             var userList
 
             for (var i = 0; i < getUsers.length; i++) {
@@ -339,7 +349,129 @@
 
         }
 
+        function getFeedback() {
 
+            var webMethod = "AccountServices.asmx/GetAllFeedback";
+            var parameters = "{}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    console.log('Function started');
+                    console.log(array);
+
+                    getFeedback = array.d;
+
+                }
+            });
+        }
+
+
+
+        function getListOfRes() {
+            var webMethod = "AccountServices.asmx/GetReservationData";
+            var parameters = "{}";
+
+            $.ajax({
+                type: "POST",
+                url: webMethod,
+                data: parameters,
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (array) {
+                    console.log('Function started');
+                    console.log(array);
+
+                    getReservations = array.d;
+
+                }
+            });
+        }
+
+        function clearEventModal() {
+            modal2.style.display = "none";
+            $('#eventInfo').empty()
+        }
+
+
+        function viewFeedback(eventID) {
+            var feedbackExists = false;
+            var feedbackString;
+            modal2.style.display = "block";
+
+            var headerString = "<div class='table' id='ev_feedback_table' margin: 0px; margin - bottom: 0rem;><div class='row header blue'> <div class='cell'>Name</div><div class='cell'>Email</div><div class='cell'>Feedback </div>";
+
+            for (var i = 0; i < getFeedback.length; i++) {
+                if (eventID == getFeedback[i].event_id) {
+                    feedbackExists = true;
+                }
+            }
+
+            if (feedbackExists == true) {
+                for (var i = 0; i < getEvents.length; i++) {
+                    if (eventID == getEvents[i].eventID) {                   
+                        $("#eventInfo").append("<div><h3>Feedback for " + getEvents[i].eventName + "</h3></div><br><br>");
+                        $("#eventInfo").append(headerString);
+
+                        
+                        for (var x = 0; x < getFeedback.length; x++) { 
+                            if (eventID == getFeedback[x].event_id) {
+                                feedbackString = "<div class='row'><div class='cell'  data-title='First' >" + getFeedback[x].first + " " + getFeedback[x].last + "</div>";
+                                feedbackString = feedbackString + "<div class='cell' data-title='text' >" + getFeedback[x].email + "</div>";
+                                feedbackString = feedbackString + "<div class='cell' data-title='text' >" + getFeedback[x].feedback_text + "</div></div>";
+                                $("#ev_feedback_table").append(feedbackString);
+
+                            }
+                            
+                        }
+                        
+                    }
+
+                }
+               
+
+            } else {
+
+                feedbackString = "<div><h3>There is no Feedback for this event</h3></div>"
+                $("#eventInfo").append(feedbackString);
+            }       
+
+        }
+
+        function viewUsers(eventID) {
+            modal2.style.display = "block";
+            var inviteString;
+
+
+            for (var i = 0; i < getEvents.length; i++) {
+                if (eventID == getEvents[i].eventID) {
+                    $("#eventInfo").append("<div><h3>Invites for " + getEvents[i].eventName + "</h3></div><br><br>");
+                }
+
+            }
+                  
+
+            var headerString = "<div class='table' id='ev_invited_table' margin: 0px; margin - bottom: 0rem;><div class='row header blue'> <div class='cell'>Name</div><div class='cell'>RSVP</div>";
+
+            $("#eventInfo").append(headerString);
+
+            for (var i = 0; i < getReservations.length; i++) {
+                if (eventID == getReservations[i].eventID) {
+                    for (var x = 0; x < getUsers.length; x++) {
+                        if (getReservations[i].userID == getUsers[x].userID) {
+                            inviteString = "<div class='row'><div class='cell'  data-title='First' >" + getUsers[x].firstName + " " + getUsers[x].lastName + "</div>";
+                            inviteString = inviteString + "<div class='cell' data-title='text' >" + getReservations[i].rsvp + "</div></div>"
+                            $("#ev_invited_table").append(inviteString);
+                        }
+                    }
+                }
+            }
+
+        }
 
 
 
@@ -381,9 +513,9 @@
                 <a href="/home.html" class="text-white">AbracaMentoring</a>
             </h4>
             <div class="flex-row my-3 my-md-0">
-                <a class="btn btn-sm btn-success mr-2" href="/addUser.html">Add User</a>
-                <a class="btn btn-sm btn-success mr-2" href="/home.html">Home</a>
                 <input class="btn btn-sm btn-success mr-2" type=button onclick="sendEmail()" value="Email Users">
+                <a class="btn btn-sm btn-success mr-2" href="admin.html">Admin</a>
+                <a class="btn btn-sm btn-success mr-2" href="/addUser.html">Add User</a>
                 <a class="btn btn-sm btn-success mr-2" href="./createEvent.html">Create Event</a>
                 <form action="/logout" method="POST" class="d-inline">
                     <!--<button class="btn btn-sm btn-secondary">Sign Out</button>-->
@@ -442,9 +574,6 @@
                     Description
                 </div>
                 <div class="cell">
-                    Event Info
-                </div>
-                <div class="cell">
                     Invited/ Attending Users
                 </div>
                 <div class="cell">
@@ -499,6 +628,7 @@
             background-color: rgba(0, 0, 0, 0.4);
             /* Black w/ opacity */
         }
+
         #recipients {
             float: right;
             clear: both;
@@ -541,10 +671,11 @@
                 text-decoration: none;
                 cursor: pointer;
             }
-           #emailButtons {
-               padding-top: 5px;
-               text-align: left;
-            }
+
+        #emailButtons {
+            padding-top: 5px;
+            text-align: left;
+        }
     </style>
 
     <div id="myModal" class="modal">
@@ -583,7 +714,19 @@
         </div>
 
     </div>
+    <div id="myModal2" class="modal">
 
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span id="xbutton2" class="close">&times;</span>
+
+            <div id="eventInfo">
+
+            </div>
+
+        </div>
+
+    </div>
 
 
     <footer class="border-top text-center small text-muted py-3">

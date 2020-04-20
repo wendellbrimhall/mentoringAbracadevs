@@ -270,7 +270,7 @@
             eventString = eventString + "<div>Description: " + getEvents[counter].description + " </div>";
 
             if (alreadyInvited == true) {
-                eventString = eventString + "<div><p>You've already been invited to this event</p></div>";
+                eventString = eventString + "<br><div><h3>You've already been invited to this event!</h3></div>";
 
             } else {
                 eventString = eventString + "<div><input type='button' id='attendButton' value='Attend' onclick='attendButton(" + eventID + ")'></div>";
@@ -369,11 +369,9 @@
                    class="text-white">AbracaMentoring</a>
             </h4>
             <div class="flex-row my-3 my-md-0">
-                <a class="btn btn-sm btn-success mr-2" href="createEvent.html">Create Event</a>
-                <a class="btn btn-sm btn-success mr-2" href="admin.html">Admin</a>
-                <a class="btn btn-sm btn-success mr-2" href="accountInfo.html">Account Info</a>
-                <a class="btn btn-sm btn-success mr-2" href="addUser.html">Add User</a>
                 <input class="btn btn-sm btn-success mr-2" type=button onclick="sendMentorEmail()" value="Email Mentor">
+                <a class="btn btn-sm btn-success mr-2" href="/home.html">Home</a>
+                <a class="btn btn-sm btn-success mr-2" href="accountInfo.html">Account Info</a>
                 <form action="/logout" method="POST" class="d-inline">
                     <!--<button class="btn btn-sm btn-secondary">Sign Out</button>-->
                     <a class="btn btn-sm btn-secondary mr-2" href="logOn.html">Sign Out</a>

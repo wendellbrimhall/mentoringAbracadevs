@@ -810,6 +810,41 @@ namespace accountmanager
 
         }
 
+        [WebMethod]
+        public Feedback[] GetAllFeedback()
+        {
+
+            DataTable sqlDt = new DataTable("feedback");
+
+            string sqlConnectString = System.Configuration.ConfigurationManager.ConnectionStrings["myDB"].ConnectionString;
+
+            string sqlSelect = "SELECT * FROM abracadevs.Feedback_mentoring inner JOIN abracadevs.Users_mentoring ON Users_mentoring.userID = Feedback_mentoring.user_id;" ;
+
+            MySqlConnection sqlConnection = new MySqlConnection(sqlConnectString);
+            MySqlCommand sqlCommand = new MySqlCommand(sqlSelect, sqlConnection);
+
+            MySqlDataAdapter sqlDa = new MySqlDataAdapter(sqlCommand);
+            sqlDa.Fill(sqlDt);
+
+            List<Feedback> feedback = new List<Feedback>();
+            for (int i = 0; i < sqlDt.Rows.Count; i++)
+            {
+                feedback.Add(new Feedback
+                {
+                    feedback_id = Convert.ToInt32(sqlDt.Rows[i]["feedback_id"]),
+                    event_id = Convert.ToInt32(sqlDt.Rows[i]["event_id"]),
+                    user_id = Convert.ToInt32(sqlDt.Rows[i]["user_id"]),
+                    feedback_text = sqlDt.Rows[i]["text"].ToString(),
+                    first = sqlDt.Rows[i]["firstName"].ToString(),
+                    last = sqlDt.Rows[i]["lastName"].ToString(),
+                    email = sqlDt.Rows[i]["email"].ToString()
+
+                });
+            }
+            //convert the list of accounts to an array and return!
+            return feedback.ToArray();
+        }
+
 
 
     }
