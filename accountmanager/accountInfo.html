@@ -75,19 +75,18 @@
                     var tableBody = $("#invited_table");
 
                     for (var i = 0; i < data.length; i++) {
+
                         var first = "<div class='row'><div class='cell' data-title='First'>" + data[i].eventID + "</div>";
-                        var second = first + "<div class='cell' data-title='date'> " + data[i].eventName + "</div>";
-                        var third = second + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
-                        var fourth = third + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
-                        var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
-                        var sixth = fifth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
-                        var seventh = sixth + "<div class='cell' data-title='text'><button onclick='javascript: AttendingEvent( " + data[i].eventID + ");'>Attending</button></div>";
-                        var eighth = seventh + "<div class='cell' data-title='notAttending'><button onclick='javascript: NotAttendingEvent(" + data[i].eventID + ");'>Not Attending</button></div>";
+                        var first = "<div class='row'><div class='cell' data-title='date'> " + data[i].eventName + "</div>";
+                        var second = first + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
+                        var third = second + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
+                        var fourth = third + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
+                        var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
+                        var sixth = fifth + "<div class='cell' data-title='text'><button onclick='javascript: AttendingEvent( " + data[i].eventID + ");'>Attending</button></div>";
+                        var seventh = sixth + "<div class='cell' data-title='notAttending'><button onclick='javascript: NotAttendingEvent(" + data[i].eventID + ");'>Not Attending</button></div>";
 
-                        //var first = "<div class='cell' data-title='Attending'><button onclick='javascript: AttendingEvent( " + eventID + ");'>Attending</button></div>";
-                        //var second = first + "<div class='cell' data-title='notAttending'><button onclick='javascript: NotAttendingEvent(" + eventID + ");'>Not Attending</button></div>";
+                        tableBody.append(seventh);
 
-                        tableBody.append(eighth);
                         
                     }
 
@@ -136,16 +135,16 @@
                             var tableBody = $("#ev_table");
 
                             userEventID = data[i].eventID;
+                          
+                            var first = "<div class='row'><div class='cell' data-title='date'> " + data[i].eventName + "</div>";
+                            var second = first + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
+                            var third = second + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
+                            var fourth = third + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
+                            var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
+                            var sixth = fifth + "<div class='cell' data-title='text'><a   href='javascript: void (0)';  onclick='Feedback(userEventID)'" + ">Leave Feedback</a></div>"
 
-                            var first = "<div class='row'><div class='cell' data-title='First'>" + userEventID + "</div>";
-                            var second = first + "<div class='cell' data-title='date'> " + data[i].eventName + "</div>";
-                            var third = second + "<div class='cell' data-title='text'>" + data[i].date + "</div>";
-                            var fourth = third + "<div class='cell' data-title='text'>" + data[i].location + "</div>";
-                            var fifth = fourth + "<div class='cell' data-title='text'>" + data[i].type + "</div>";
-                            var sixth = fifth + "<div class='cell' data-title='text'>" + data[i].description + "</div>";
-                            var seventh = sixth + "<div class='cell' data-title='text'><a   href='javascript: void (0)';  onclick='Feedback(userEventID)'" + ">Leave Feedback</a></div>"
+                            tableBody.append(sixth);
 
-                            tableBody.append(seventh);
                         }
                     }
 
@@ -319,9 +318,6 @@
 
             <div class="row header blue">
                 <div class="cell">
-                    Event ID
-                </div>
-                <div class="cell">
                     Event Name
                 </div>
                 <div class="cell">
@@ -354,9 +350,6 @@
         <div class="table" id="ev_table" margin: 0px; margin-bottom: 0rem;>
 
             <div class="row header blue">
-                <div class="cell">
-                    Event ID
-                </div>
                 <div class="cell">
                     Event Name
                 </div>
