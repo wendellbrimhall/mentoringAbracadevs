@@ -387,7 +387,7 @@ namespace accountmanager
                 var smtpAddr = "smtp.gmail.com";
                 var portNumber = 587;
                 var enableSSL = true;
-                var fromAddress = "cis440parking@gmail.com";
+                var fromAddress = "abracamentoring@gmail.com";
                 var password = "!!Abracadevs";
                 //var replyToAddr = "wendell334@gmail.com";
 
@@ -562,7 +562,7 @@ namespace accountmanager
 
         [WebMethod(EnableSession = true)]
         public string SendEmailToMentor(string to, string body, string subject)
-        ///This webmethod will send out an email from cis440parking@asu.edu using googles
+        ///This webmethod will send out an email from abracamentoring@gmail.com using googles
         ///SMTP server. 
         {
             var toAddress = to;
@@ -578,7 +578,7 @@ namespace accountmanager
                 var smtpAddr = "smtp.gmail.com";
                 var portNumber = 587;
                 var enableSSL = true;
-                var fromAddress = "cis440parking@gmail.com";
+                var fromAddress = "abracamentoring@gmail.com";
                 var password = "!!Abracadevs";
                 
 
